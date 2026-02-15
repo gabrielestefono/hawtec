@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, SubmitEventHandler, useState } from "react";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import ConfirmPasswordInput from "@/components/features/auth/cadastro/ConfirmPasswordInput";
+import EmailInput from "@/components/features/auth/cadastro/EmailInput";
+import NameInput from "@/components/features/auth/cadastro/NameInput";
+import PasswordInput from "@/components/features/auth/cadastro/PasswordInput";
+import TermsAndConditionsCheckbox from "@/components/features/auth/cadastro/TermsAndConditionsCheckbox";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -14,15 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAuth } from "@/contexts/auth-context";
 import DefaultLayout from "@/layouts/DefaultLayout";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import NameInput from "@/components/features/auth/cadastro/NameInput";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { SubmitEventHandler, useState } from "react";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
-import EmailInput from "@/components/features/auth/cadastro/EmailInput";
-import PasswordInput from "@/components/features/auth/cadastro/PasswordInput";
-import ConfirmPasswordInput from "@/components/features/auth/cadastro/ConfirmPasswordInput";
-import TermsAndConditionsCheckbox from "@/components/features/auth/cadastro/TermsAndConditionsCheckbox";
 
 interface CadastroForm {
   name: string;
@@ -34,15 +31,8 @@ interface CadastroForm {
 
 export default function CadastroPage() {
   const router = useRouter();
-  const { register } = useAuth();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
@@ -59,17 +49,23 @@ export default function CadastroPage() {
   });
 
   const handleSucces: SubmitHandler<CadastroForm> = async ({
+    name,
     email,
     password,
+    accept_terms,
+    confirm_password,
   }: CadastroForm) => {
     setIsLoading(true);
-    const success = await register(name, email, password);
+    console.log(name, email, password, accept_terms, confirm_password);
+    alert("Cadastro chamado!");
     setIsLoading(false);
 
+    const success = true;
+
     if (success) {
-      router.push("/");
+      router.push("/auth/login");
     } else {
-      setError("Email ou senha incorretos.");
+      setError("Ocorreu um erro, tente novamente mais tarde!");
     }
   };
 

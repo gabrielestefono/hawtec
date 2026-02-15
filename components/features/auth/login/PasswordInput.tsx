@@ -46,7 +46,7 @@ export default function PasswordInput<T extends FieldValues>({
       <div className="flex items-center justify-between">
         <Label htmlFor="password">Senha</Label>
         <Link
-          href="/esqueci-senha"
+          href="/auth/esqueci-senha"
           className="text-xs font-medium text-primary hover:underline"
         >
           Esqueci minha senha
