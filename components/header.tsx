@@ -1,20 +1,29 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { useTheme } from "next-themes"
-import { Search, Heart, ShoppingCart, User, Menu, X, Sun, Moon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import {
+  Search,
+  Heart,
+  ShoppingCart,
+  User,
+  Menu,
+  X,
+  Sun,
+  Moon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
 const navigation = [
   { name: "Início", href: "/" },
@@ -22,27 +31,33 @@ const navigation = [
   { name: "Categorias", href: "/categorias" },
   { name: "Ofertas", href: "/ofertas" },
   { name: "Contato", href: "/contato" },
-]
+];
 
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
-  const { theme, setTheme } = useTheme()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
-  const cartItemCount = 3
-  const wishlistCount = 5
+  const cartItemCount = 3;
+  const wishlistCount = 5;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       {/* Top bar */}
       <div className="border-b border-border/30 bg-secondary/50">
         <div className="mx-auto flex h-8 max-w-7xl items-center justify-between px-4 text-xs text-muted-foreground">
           <p>Frete grátis em compras acima de R$ 299</p>
           <div className="hidden gap-4 md:flex">
-            <Link href="/rastrear" className="transition-colors hover:text-primary">
+            <Link
+              href="/rastrear"
+              className="transition-colors hover:text-primary"
+            >
               Rastrear Pedido
             </Link>
-            <Link href="/suporte" className="transition-colors hover:text-primary">
+            <Link
+              href="/suporte"
+              className="transition-colors hover:text-primary"
+            >
               Suporte
             </Link>
           </div>
@@ -70,14 +85,14 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
             <Image
-              src="/images/logo.webp"
+              src="logo.webp"
               alt="TEC HAW Logo"
               width={50}
               height={50}
               className="h-10 w-auto lg:h-12"
               unoptimized
             />
-            <span className="hidden bg-gradient-to-r from-primary to-accent bg-clip-text text-xl font-bold tracking-tight text-transparent sm:block lg:text-2xl">
+            <span className="hidden bg-linear-to-r from-primary to-accent bg-clip-text text-xl font-bold tracking-tight text-transparent sm:block lg:text-2xl">
               TEC HAW
             </span>
           </Link>
@@ -242,5 +257,5 @@ export function Header() {
         </div>
       )}
     </header>
-  )
+  );
 }

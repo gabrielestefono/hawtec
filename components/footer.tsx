@@ -45,7 +45,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3">
               <Image
-                src="/images/logo.webp"
+                src="/logo.webp"
                 alt="TEC HAW Logo"
                 width={50}
                 height={50}
