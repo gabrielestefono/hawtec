@@ -1,10 +1,9 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { ChevronLeft, ChevronRight, Wrench, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, Wrench, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const bannerSlides = [
   {
@@ -34,25 +33,27 @@ const bannerSlides = [
     href: "/perifericos",
     bgColor: "from-primary/10 via-background to-accent/10",
   },
-]
+];
 
 export function HeroSection() {
-  const [currentSlide, setCurrentSlide] = useState(0)
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % bannerSlides.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [])
+      setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % bannerSlides.length)
-  }
+    setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
+  };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + bannerSlides.length) % bannerSlides.length)
-  }
+    setCurrentSlide(
+      (prev) => (prev - 1 + bannerSlides.length) % bannerSlides.length,
+    );
+  };
 
   return (
     <section className="relative">
@@ -76,7 +77,11 @@ export function HeroSection() {
             </p>
           </div>
           <Link href="/servicos">
-            <Button variant="outline" size="sm" className="gap-2 border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground bg-transparent">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground bg-transparent"
+            >
               Solicitar Serviço
               <ArrowRight className="h-4 w-4" />
             </Button>
@@ -93,9 +98,9 @@ export function HeroSection() {
           {bannerSlides.map((slide) => (
             <div
               key={slide.id}
-              className={`min-w-full bg-gradient-to-r ${slide.bgColor}`}
+              className={`min-w-full bg-linear-to-r ${slide.bgColor}`}
             >
-              <div className="mx-auto flex min-h-[400px] max-w-7xl flex-col items-center justify-center gap-6 px-4 py-16 text-center lg:min-h-[500px]">
+              <div className="mx-auto flex min-h-100 max-w-7xl flex-col items-center justify-center gap-6 px-4 py-16 text-center lg:min-h-125">
                 <span className="rounded-full bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent">
                   {slide.subtitle}
                 </span>
@@ -149,5 +154,5 @@ export function HeroSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -7,6 +7,7 @@ import {
   useEffect,
   useCallback,
   type ReactNode,
+  useMemo,
 } from "react";
 import type { User } from "@/lib/types";
 
@@ -15,7 +16,14 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string) => Promise<boolean>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    accept_terms: boolean,
+    confirm_password: string,
+  ) => Promise<boolean>;
+  forgotPassword: (email: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => void;
 }
@@ -32,6 +40,7 @@ const MOCK_USER: User = {
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [user, setUser] = useState<User | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -55,9 +64,17 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   }, [user]);
 
   const login = useCallback(
-    async (email: string, _password: string): Promise<boolean> => {
-      // Simulated delay
-      await new Promise((r) => setTimeout(r, 800));
+    async (email: string, password: string): Promise<boolean> => {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+      if (!response.ok) {
+        return false;
+      }
       setUser({ ...MOCK_USER, email });
       return true;
     },
@@ -68,10 +85,39 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     async (
       name: string,
       email: string,
-      _password: string,
+      password: string,
+      accept_terms: boolean,
+      confirm_password: string,
     ): Promise<boolean> => {
-      await new Promise((r) => setTimeout(r, 800));
-      setUser({ ...MOCK_USER, id: `usr-${Date.now()}`, name, email });
+      const response = await fetch("/api/auth/cadastro", {
+        method: "POST",
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          accept_terms,
+          confirm_password,
+        }),
+      });
+      if (!response.ok) {
+        return false;
+      }
+      return true;
+    },
+    [],
+  );
+
+  const forgotPassword = useCallback(
+    async (email: string): Promise<boolean> => {
+      const response = await fetch("/api/auth/esqueceu-senha", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+        }),
+      });
+      if (!response.ok) {
+        return false;
+      }
       return true;
     },
     [],
@@ -85,20 +131,22 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     setUser((prev) => (prev ? { ...prev, ...data } : null));
   }, []);
 
+  const contextValue = useMemo(
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      isLoading,
+      login,
+      register,
+      logout,
+      updateProfile,
+      forgotPassword,
+    }),
+    [user, isLoading, login, register, logout, updateProfile, forgotPassword],
+  );
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        register,
-        logout,
-        updateProfile,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
 

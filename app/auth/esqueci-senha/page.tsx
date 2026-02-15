@@ -15,6 +15,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import Image from "next/image";
 import EmailInput from "@/components/features/auth/esqueci-senha/EmailInput";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { useAuth } from "@/contexts/auth-context";
 
 interface ForgotPasswordForm {
   email: string;
@@ -24,6 +25,7 @@ export default function EsqueciSenhaPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const { forgotPassword } = useAuth();
 
   const {
     control,
@@ -39,14 +41,12 @@ export default function EsqueciSenhaPage() {
     email,
   }: ForgotPasswordForm) => {
     setIsLoading(true);
-    console.log(email);
+
+    const success = await forgotPassword(email);
 
     setIsLoading(false);
 
-    const success = true;
-
     if (success) {
-      alert("Esqueceu senha chamado!");
       setSent(true);
     } else {
       setError("Ocorreu um erro, tente novamente mais tarde!");
@@ -108,8 +108,8 @@ export default function EsqueciSenhaPage() {
                     Enviamos um link de recuperacao para{" "}
                     <strong className="text-foreground">
                       {getValues("email")}
-                    </strong>{""}
-                    . Verifique sua caixa de entrada e spam.
+                    </strong>
+                    {""}. Verifique sua caixa de entrada e spam.
                   </p>
                 </div>
                 <Button asChild variant="outline" className="mt-2">

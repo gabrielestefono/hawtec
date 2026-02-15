@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useAuth } from "@/contexts/auth-context";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -33,6 +34,7 @@ export default function CadastroPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { register } = useAuth();
 
   const {
     control,
@@ -56,11 +58,16 @@ export default function CadastroPage() {
     confirm_password,
   }: CadastroForm) => {
     setIsLoading(true);
-    console.log(name, email, password, accept_terms, confirm_password);
-    alert("Cadastro chamado!");
-    setIsLoading(false);
 
-    const success = true;
+    const success = await register(
+      name,
+      email,
+      password,
+      accept_terms,
+      confirm_password,
+    );
+
+    setIsLoading(false);
 
     if (success) {
       router.push("/auth/login");
