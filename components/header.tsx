@@ -27,10 +27,10 @@ import { Badge } from "@/components/ui/badge";
 
 const navigation = [
   { name: "Início", href: "/" },
-  { name: "Produtos", href: "/produtos" },
-  { name: "Categorias", href: "/categorias" },
-  { name: "Ofertas", href: "/ofertas" },
-  { name: "Contato", href: "/contato" },
+  // { name: "Produtos", href: "/produtos" },
+  // { name: "Categorias", href: "/categorias" },
+  // { name: "Ofertas", href: "/ofertas" },
+  // { name: "Contato", href: "/contato" },
 ];
 
 export function Header() {
@@ -48,18 +48,18 @@ export function Header() {
         <div className="mx-auto flex h-8 max-w-7xl items-center justify-between px-4 text-xs text-muted-foreground">
           <p>Frete grátis em compras acima de R$ 299</p>
           <div className="hidden gap-4 md:flex">
-            <Link
+            {/* <Link
               href="/rastrear"
               className="transition-colors hover:text-primary"
             >
               Rastrear Pedido
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               href="/suporte"
               className="transition-colors hover:text-primary"
             >
               Suporte
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
@@ -85,7 +85,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
             <Image
-              src="logo.webp"
+              src="/logo.webp"
               alt="TEC HAW Logo"
               width={50}
               height={50}
@@ -111,7 +111,7 @@ export function Header() {
           </nav>
 
           {/* Search bar - Desktop */}
-          <div className="hidden flex-1 max-w-md lg:flex">
+          {/* <div className="hidden flex-1 max-w-md lg:flex">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -120,12 +120,12 @@ export function Header() {
                 className="w-full rounded-full border-border/50 bg-secondary/50 pl-10 pr-4 focus-visible:border-primary focus-visible:ring-primary/20"
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Actions */}
           <div className="flex items-center gap-1">
             {/* Mobile search toggle */}
-            <Button
+            {/* <Button
               variant="ghost"
               size="icon"
               className="lg:hidden"
@@ -133,10 +133,10 @@ export function Header() {
             >
               <Search className="h-5 w-5" />
               <span className="sr-only">Buscar</span>
-            </Button>
+            </Button> */}
 
             {/* Wishlist */}
-            <Button variant="ghost" size="icon" className="relative">
+            {/* <Button variant="ghost" size="icon" className="relative">
               <Heart className="h-5 w-5" />
               {wishlistCount > 0 && (
                 <Badge
@@ -147,10 +147,10 @@ export function Header() {
                 </Badge>
               )}
               <span className="sr-only">Lista de Desejos</span>
-            </Button>
+            </Button> */}
 
             {/* Cart */}
-            <Button variant="ghost" size="icon" className="relative">
+            {/* <Button variant="ghost" size="icon" className="relative">
               <ShoppingCart className="h-5 w-5" />
               {cartItemCount > 0 && (
                 <Badge
@@ -161,7 +161,7 @@ export function Header() {
                 </Badge>
               )}
               <span className="sr-only">Carrinho</span>
-            </Button>
+            </Button> */}
 
             {/* Theme toggle */}
             <Button
@@ -184,16 +184,16 @@ export function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem>
-                  <Link href="/login" className="w-full">
+                  <Link href="/auth/login" className="w-full">
                     Entrar
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href="/cadastro" className="w-full">
+                  <Link href="/auth/cadastro" className="w-full">
                     Criar Conta
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                {/* <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Link href="/minha-conta" className="w-full">
                     Minha Conta
@@ -203,14 +203,14 @@ export function Header() {
                   <Link href="/meus-pedidos" className="w-full">
                     Meus Pedidos
                   </Link>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </div>
 
         {/* Mobile search */}
-        {searchOpen && (
+        {/* {searchOpen && (
           <div className="border-t border-border/30 py-3 lg:hidden">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -222,11 +222,11 @@ export function Header() {
               />
             </div>
           </div>
-        )}
+        )} */}
       </div>
 
       {/* Mobile menu */}
-      {mobileMenuOpen && (
+      {/* {mobileMenuOpen && (
         <div className="border-t border-border/30 lg:hidden">
           <nav className="mx-auto max-w-7xl space-y-1 px-4 py-4">
             {navigation.map((item) => (
@@ -255,7 +255,7 @@ export function Header() {
             </div>
           </nav>
         </div>
-      )}
+      )} */}
     </header>
   );
 }

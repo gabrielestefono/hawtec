@@ -57,15 +57,15 @@ export function Footer() {
                 <p className="text-xs text-muted-foreground">Tecnologia Premium</p>
               </div>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            {/* <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               A TEC HAW nasceu com o propósito de levar tecnologia de qualidade para todos. 
               Com mais de 10 anos de experiência em assistência técnica e vendas, nos tornamos 
               referência em soluções tecnológicas, oferecendo produtos selecionados e serviços 
               especializados com a garantia de quem entende do assunto.
-            </p>
+            </p> */}
             
             {/* Social Links */}
-            <div className="mt-4 flex gap-3">
+            {/* <div className="mt-4 flex gap-3">
               <Link 
                 href="https://instagram.com/techaw.oficial" 
                 target="_blank"
@@ -94,11 +94,11 @@ export function Footer() {
               >
                 <MessageCircle className="h-4 w-4" />
               </Link>
-            </div>
+            </div> */}
           </div>
 
           {/* Institucional Links */}
-          <div>
+          {/* <div>
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Institucional
             </h4>
@@ -114,10 +114,10 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* Ajuda Links */}
-          <div>
+          {/* <div>
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Ajuda
             </h4>
@@ -133,10 +133,10 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* Contato */}
-          <div>
+          {/* <div>
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Contato
             </h4>
@@ -177,11 +177,11 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         {/* Payment Methods */}
-        <div className="mt-10 border-t border-border pt-8">
+        {/* <div className="mt-10 border-t border-border pt-8">
           <h4 className="mb-4 text-center text-sm font-semibold text-foreground">
             Formas de Pagamento
           </h4>
@@ -198,27 +198,27 @@ export function Footer() {
           <p className="mt-4 text-center text-xs text-muted-foreground">
             Parcele em até 12x sem juros no cartão de crédito
           </p>
-        </div>
+        </div> */}
       </div>
 
       {/* Bottom Footer */}
-      <div className="border-t border-border bg-muted/50">
+      {/* <div className="border-t border-border bg-muted/50">
         <div className="mx-auto max-w-7xl px-4 py-6">
           <div className="flex flex-col items-center gap-4">
-            {/* Copyright */}
+            {/* Copyright /}
             <p className="text-center text-xs text-muted-foreground">
               © {new Date().getFullYear()} TEC HAW Tecnologia LTDA. Todos os direitos reservados.
               <br />
               CNPJ: 00.000.000/0001-00
             </p>
             
-            {/* Divider */}
+            {/* Divider /}
             <div className="h-px w-full max-w-xs bg-border" />
             
-            {/* Developer Credit */}
+            {/* Developer Credit /}
             <div className="flex flex-col items-center gap-2">
               <p className="text-xs text-muted-foreground">Desenvolvido por</p>
-              {/* Placeholder for developer logo */}
+              {/* Placeholder for developer logo /}
               <div className="flex h-8 items-center justify-center rounded bg-muted px-4">
                 <span className="text-xs font-medium text-muted-foreground">
                   [Sua Logo Aqui]
@@ -227,7 +227,7 @@ export function Footer() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </footer>
   )
 }
