@@ -197,6 +197,11 @@ export function Header() {
                         Meus Pedidos
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/auth/logout" className="w-full">
+                        Sair
+                      </Link>
+                    </DropdownMenuItem>
                   </>
                 ) : (
                   <>
