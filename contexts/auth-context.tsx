@@ -9,7 +9,8 @@ import {
   type ReactNode,
   useMemo,
 } from "react";
-import type { User } from "@/lib/types";
+import { ResponseApi } from "@/types/app/api/response";
+import { Login, User } from "@/types/app/api/auth/login/Login";
 
 interface AuthContextValue {
   user: User | null;
@@ -29,14 +30,6 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-
-const MOCK_USER: User = {
-  id: "usr-1",
-  name: "Joao Silva",
-  email: "joao@email.com",
-  phone: "(11) 99999-9999",
-  cpf: "123.456.789-00",
-};
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [user, setUser] = useState<User | null>(null);
@@ -75,7 +68,8 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       if (!response.ok) {
         return false;
       }
-      setUser({ ...MOCK_USER, email });
+      const data = (await response.json()) as ResponseApi<Login>;
+      setUser(data.data.user);
       return true;
     },
     [],
