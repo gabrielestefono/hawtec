@@ -4,13 +4,16 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
   useCallback,
   type ReactNode,
   useMemo,
+  SetStateAction,
+  Dispatch,
+  useEffect,
 } from "react";
 import { ResponseApi } from "@/types/app/api/response";
 import { Login, User } from "@/types/app/api/auth/login/Login";
+import { getUser } from "@/cache/auth/getUser";
 
 interface AuthContextValue {
   user: User | null;
@@ -27,34 +30,18 @@ interface AuthContextValue {
   forgotPassword: (email: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => void;
+  setUser: Dispatch<SetStateAction<User | null>>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [user, setUser] = useState<User | null>(null);
+export function AuthProvider({
+  children,
+  initialUser,
+}: Readonly<{ children: ReactNode; initialUser: User | null }>) {
+  const [user, setUser] = useState<User | null>(initialUser);
 
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("hawtec-user");
-      if (saved) {
-        setUser(JSON.parse(saved));
-      }
-    } catch {
-      // ignore
-    }
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("hawtec-user", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("hawtec-user");
-    }
-  }, [user]);
 
   const login = useCallback(
     async (email: string, password: string): Promise<boolean> => {
@@ -128,15 +115,25 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const contextValue = useMemo(
     () => ({
       user,
-      isAuthenticated: !!user,
-      isLoading,
       login,
-      register,
       logout,
+      setUser,
+      register,
+      isLoading,
       updateProfile,
       forgotPassword,
+      isAuthenticated: !!user,
     }),
-    [user, isLoading, login, register, logout, updateProfile, forgotPassword],
+    [
+      user,
+      login,
+      logout,
+      setUser,
+      register,
+      isLoading,
+      updateProfile,
+      forgotPassword,
+    ],
   );
 
   return (

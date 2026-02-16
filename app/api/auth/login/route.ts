@@ -1,32 +1,29 @@
-import { UrlBackend } from "@/temp";
+import { api } from "@/lib/api";
 import { Login } from "@/types/app/api/auth/login/Login";
 import { ResponseApi, ResponseApiError } from "@/types/app/api/response";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(
   request: Request,
 ): Promise<NextResponse<ResponseApi<Login> | ResponseApiError>> {
   const body = await request.json();
-  const result = await fetch(`${UrlBackend}/auth/login`, {
-    body: JSON.stringify({
-      email: body.email,
-      password: body.password,
-    }),
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
+
+  const response = await api.post<ResponseApi<Login>>("/auth/login", {
+    email: body.email,
+    password: body.password,
   });
-  if (!result.ok) {
-    return NextResponse.json(
-      {
-        message: "Ocorreu um erro, tente novamente mais tarde!",
-        status: "error",
-      },
-      { status: 500 },
-    );
+
+  const token = response.data.data.token;
+  if (token) {
+    const cookieStore = cookies();
+    (await cookieStore).set("access_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+    });
   }
-  const data = (await result.json()) as ResponseApi<Login>;
-  return NextResponse.json(data, { status: 200 });
+
+  return NextResponse.json(response.data);
 }

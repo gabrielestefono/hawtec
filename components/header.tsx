@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/auth-context";
 
 const navigation = [
   { name: "Início", href: "/" },
@@ -37,6 +38,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { isAuthenticated } = useAuth();
 
   const cartItemCount = 3;
   const wishlistCount = 5;
@@ -183,27 +185,33 @@ export function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem>
-                  <Link href="/auth/login" className="w-full">
-                    Entrar
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/auth/cadastro" className="w-full">
-                    Criar Conta
-                  </Link>
-                </DropdownMenuItem>
-                {/* <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href="/minha-conta" className="w-full">
-                    Minha Conta
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/meus-pedidos" className="w-full">
-                    Meus Pedidos
-                  </Link>
-                </DropdownMenuItem> */}
+                {isAuthenticated ? (
+                  <>
+                    <DropdownMenuItem>
+                      <Link href="/perfil/minha-conta" className="w-full">
+                        Minha Conta
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/perfil/pedidos" className="w-full">
+                        Meus Pedidos
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem>
+                      <Link href="/auth/login" className="w-full">
+                        Entrar
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/auth/cadastro" className="w-full">
+                        Criar Conta
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
