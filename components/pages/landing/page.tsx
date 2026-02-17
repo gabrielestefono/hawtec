@@ -15,6 +15,7 @@ interface HomeProps {
   categories: Category[];
   products: Product[];
   offers: Product[];
+  bestsellers: Product[];
 }
 
 export default function Home({
@@ -22,6 +23,7 @@ export default function Home({
   categories,
   products,
   offers,
+  bestsellers,
 }: Readonly<HomeProps>) {
   return (
     <DefaultLayout>
@@ -29,7 +31,7 @@ export default function Home({
       <CategoriesSection categories={categories} />
       <ProductsSection products={products} />
       <OffersSection offers={offers} />
-      <BestsellersSection />
+      <BestsellersSection bestsellers={bestsellers} />
       <ContactSection />
     </DefaultLayout>
   );

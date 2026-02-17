@@ -1,25 +1,14 @@
 "use client";
 
+import { ArrowRight, Wrench } from "lucide-react";
 import Link from "next/link";
-import {
-  Wrench,
-  Laptop,
-  Smartphone,
-  Monitor,
-  Keyboard,
-  Headphones,
-  Cpu,
-  HardDrive,
-  Cable,
-  ArrowRight,
-} from "lucide-react";
 
 export interface Category {
   id: number;
   name: string;
   description: string;
   icon: string;
-  href: string;
+  slug: string;
   created_at: string;
   updated_at: string;
   products_count: number;
@@ -46,7 +35,7 @@ export function CategoriesSection({
             </p>
           </div>
           <Link
-            href="/categorias"
+            href="/produtos"
             className="hidden items-center gap-1 text-sm font-medium text-primary hover:underline sm:flex"
           >
             Ver todas
@@ -59,7 +48,7 @@ export function CategoriesSection({
           {/* Featured: Assistência Técnica - Takes 1 column but full height */}
           <Link
             href="/servicos"
-            className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border-2 border-accent/30 bg-gradient-to-br from-accent/10 via-accent/5 to-transparent p-6 transition-all hover:border-accent/60 hover:shadow-lg hover:shadow-accent/10 lg:row-span-2"
+            className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border-2 border-accent/30 bg-linear-to-br from-accent/10 via-accent/5 to-transparent p-6 transition-all hover:border-accent/60 hover:shadow-lg hover:shadow-accent/10 lg:row-span-2"
           >
             {/* Background decoration */}
             <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-accent/10 blur-2xl transition-all group-hover:bg-accent/20" />
@@ -106,30 +95,32 @@ export function CategoriesSection({
           </Link>
 
           {/* Product Categories Grid - 2 columns, 4 rows = 8 items */}
-          <div className="grid grid-cols-2 gap-3 lg:col-span-2 lg:gap-4">
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={category.href}
-                className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:bg-card/80 hover:shadow-md"
-              >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                  {/* <category.icon className="h-6 w-6" /> */}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="truncate font-semibold text-foreground">
-                    {category.name}
-                  </h3>
-                  <p className="truncate text-sm text-muted-foreground">
-                    {category.description}
-                  </p>
-                </div>
-                <span className="hidden shrink-0 rounded-full bg-secondary px-2 py-1 text-xs text-muted-foreground sm:block">
-                  {category.products_count}
-                </span>
-              </Link>
-            ))}
-          </div>
+          {categories.length > 0 && (
+            <div className="grid grid-cols-2 gap-3 lg:col-span-2 lg:gap-4">
+              {categories.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/produtos/categoria?categorias=${category.slug}`}
+                  className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:bg-card/80 hover:shadow-md"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+                    {/* <category.icon className="h-6 w-6" /> */}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-semibold text-foreground">
+                      {category.name}
+                    </h3>
+                    <p className="truncate text-sm text-muted-foreground">
+                      {category.description}
+                    </p>
+                  </div>
+                  <span className="hidden shrink-0 rounded-full bg-secondary px-2 py-1 text-xs text-muted-foreground sm:block">
+                    {category.products_count}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Mobile: Ver todas */}

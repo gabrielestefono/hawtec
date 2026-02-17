@@ -29,6 +29,10 @@ interface ProductsSectionProps {
 export default function ProductsSection({
   products,
 }: Readonly<ProductsSectionProps>) {
+  if (products.length === 0) {
+    return null;
+  }
+
   return (
     <section className="border-t border-border bg-muted/30 py-12 lg:py-16">
       <div className="mx-auto max-w-7xl px-4">

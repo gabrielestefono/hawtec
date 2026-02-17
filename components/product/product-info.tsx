@@ -1,33 +1,41 @@
-"use client"
+"use client";
 
-import { Heart, ShoppingCart, Zap, Truck, ShieldCheck, RotateCcw } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { StarRating } from "./star-rating"
-import { ColorSelector } from "./color-selector"
-import { QuantitySelector } from "./quantity-selector"
-import type { Product } from "@/lib/types"
-import { useCart } from "@/contexts/cart-context"
-import { useLikes } from "@/contexts/likes-context"
+import {
+  Heart,
+  ShoppingCart,
+  Zap,
+  Truck,
+  ShieldCheck,
+  RotateCcw,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { ColorSelector } from "./color-selector";
+import { QuantitySelector } from "./quantity-selector";
+import type { Product } from "@/lib/types";
+import { useCart } from "@/contexts/cart-context";
+import { useLikes } from "@/contexts/likes-context";
+import StarRating from "./star-rating";
 
 interface ProductInfoProps {
-  product: Product
+  product: Product;
 }
 
 function formatPrice(value: number) {
   return value.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
-  })
+  });
 }
 
-export function ProductInfo({ product }: ProductInfoProps) {
-  const { addItem } = useCart()
-  const { isLiked, toggleItem } = useLikes()
-  const liked = isLiked(product.id)
-  const firstAvailableColor = product.colors.find((color) => color.available)?.name ?? "Padrao"
+export function ProductInfo({ product }: Readonly<ProductInfoProps>) {
+  const { addItem } = useCart();
+  const { isLiked, toggleItem } = useLikes();
+  const liked = isLiked(product.id);
+  const firstAvailableColor =
+    product.colors.find((color) => color.available)?.name ?? "Padrao";
 
   return (
     <div className="flex flex-col gap-6">
@@ -58,11 +66,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
       </h1>
 
       {/* Rating */}
-      <StarRating
-        rating={product.rating}
-        reviewCount={product.reviewCount}
-        size="md"
-      />
+      <StarRating rating={product.rating} reviewCount={product.reviewCount} />
 
       {/* Short Description */}
       <p className="leading-relaxed text-muted-foreground">
@@ -84,8 +88,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
           </span>
           {product.originalPrice && (
             <span className="text-sm font-medium text-accent">
-              Economize{" "}
-              {formatPrice(product.originalPrice - product.price)}
+              Economize {formatPrice(product.originalPrice - product.price)}
             </span>
           )}
         </div>
@@ -129,7 +132,11 @@ export function ProductInfo({ product }: ProductInfoProps) {
           Adicionar ao carrinho
         </Button>
         <div className="flex gap-3">
-          <Button variant="secondary" size="lg" className="flex-1 gap-2 text-base">
+          <Button
+            variant="secondary"
+            size="lg"
+            className="flex-1 gap-2 text-base"
+          >
             <Zap className="h-5 w-5" />
             Comprar agora
           </Button>
@@ -155,7 +162,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                 "h-5 w-5 transition-colors",
                 liked
                   ? "fill-destructive text-destructive"
-                  : "text-muted-foreground"
+                  : "text-muted-foreground",
               )}
             />
           </Button>
@@ -185,9 +192,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
             <span className="text-xs font-semibold text-foreground">
               Garantia
             </span>
-            <span className="text-xs text-muted-foreground">
-              2 anos HawTec
-            </span>
+            <span className="text-xs text-muted-foreground">2 anos HawTec</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -198,12 +203,10 @@ export function ProductInfo({ product }: ProductInfoProps) {
             <span className="text-xs font-semibold text-foreground">
               Troca facil
             </span>
-            <span className="text-xs text-muted-foreground">
-              Ate 30 dias
-            </span>
+            <span className="text-xs text-muted-foreground">Ate 30 dias</span>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

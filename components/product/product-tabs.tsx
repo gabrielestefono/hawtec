@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { StarRating } from "./star-rating"
-import { Badge } from "@/components/ui/badge"
-import { CheckCircle2 } from "lucide-react"
-import type { Product } from "@/lib/types"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle2 } from "lucide-react";
+import type { Product } from "@/lib/types";
+import StarRating from "./star-rating";
 
 interface ProductTabsProps {
-  product: Product
+  product: Product;
 }
 
 export function ProductTabs({ product }: ProductTabsProps) {
@@ -81,7 +81,10 @@ export function ProductTabs({ product }: ProductTabsProps) {
               <span className="text-4xl font-bold text-foreground">
                 {product.rating}
               </span>
-              <StarRating rating={product.rating} showCount={false} size="md" />
+              <StarRating
+                rating={product.rating}
+                reviewCount={product.reviewCount}
+              />
               <span className="text-sm text-muted-foreground">
                 {product.reviewCount} avaliacoes
               </span>
@@ -89,12 +92,12 @@ export function ProductTabs({ product }: ProductTabsProps) {
             <div className="flex flex-1 flex-col gap-2">
               {[5, 4, 3, 2, 1].map((star) => {
                 const count = product.reviews.filter(
-                  (r) => Math.floor(r.rating) === star
-                ).length
+                  (r) => Math.floor(r.rating) === star,
+                ).length;
                 const percentage =
                   product.reviews.length > 0
                     ? (count / product.reviews.length) * 100
-                    : 0
+                    : 0;
                 return (
                   <div key={star} className="flex items-center gap-3">
                     <span className="w-8 text-right text-sm text-muted-foreground">
@@ -110,7 +113,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
                       {count}
                     </span>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
@@ -129,19 +132,15 @@ export function ProductTabs({ product }: ProductTabsProps) {
                         {review.author}
                       </span>
                       {review.verified && (
-                        <Badge
-                          variant="secondary"
-                          className="gap-1 text-xs"
-                        >
+                        <Badge variant="secondary" className="gap-1 text-xs">
                           <CheckCircle2 className="h-3 w-3" />
                           Compra verificada
                         </Badge>
                       )}
                     </div>
                     <StarRating
-                      rating={review.rating}
-                      showCount={false}
-                      size="sm"
+                      rating={product.rating}
+                      reviewCount={product.reviewCount}
                     />
                   </div>
                   <span className="text-xs text-muted-foreground">
@@ -160,5 +159,5 @@ export function ProductTabs({ product }: ProductTabsProps) {
         </div>
       </TabsContent>
     </Tabs>
-  )
+  );
 }

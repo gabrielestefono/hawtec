@@ -9,4 +9,5 @@ export interface Landing {
   categories: Category[];
   products: Product[];
   offers: Offer[];
+  bestsellers: Product[];
 }

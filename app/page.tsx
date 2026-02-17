@@ -6,6 +6,5 @@ import { ResponseApi } from "@/types/app/api/response";
 export default async function LandingServerPage() {
   const response = await apiInternal.get<ResponseApi<Landing>>("/landing");
   const landingData = response.data.data;
-  console.log(landingData.products);
   return <Home {...landingData} />;
 }

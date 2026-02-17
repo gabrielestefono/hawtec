@@ -27,6 +27,7 @@ export interface Product {
   category: Category;
   reviews_count: number;
   reviews_avg_rating: number;
+  slug: string;
 }
 
 interface ProductCardProps {
@@ -107,7 +108,7 @@ export default function ProductCard({ product }: Readonly<ProductCardProps>) {
             className="translate-y-4 transition-transform group-hover:translate-y-0"
             asChild
           >
-            <Link href={`/produto/${product.id}`}>
+            <Link href={`/produtos/item/${product.slug}`}>
               <Eye className="mr-2 h-4 w-4" />
               Ver mais
             </Link>
