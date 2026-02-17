@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
 import { CartProvider } from "@/contexts/cart-context";
+import { LikesProvider } from "@/contexts/likes-context";
 import { getUser } from "@/cache/auth/getUser";
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -47,14 +48,16 @@ export default async function RootLayout({
         {/* <Analytics /> */}
         <AuthProvider initialUser={user}>
           <CartProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="light"
-              enableSystem={false}
-              disableTransitionOnChange
-            >
-              {children}
-            </ThemeProvider>
+            <LikesProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="light"
+                enableSystem={false}
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
+            </LikesProvider>
           </CartProvider>
         </AuthProvider>
       </body>

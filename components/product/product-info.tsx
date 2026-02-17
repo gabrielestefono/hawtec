@@ -1,7 +1,6 @@
 "use client"
 
 import { Heart, ShoppingCart, Zap, Truck, ShieldCheck, RotateCcw } from "lucide-react"
-import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -10,6 +9,8 @@ import { StarRating } from "./star-rating"
 import { ColorSelector } from "./color-selector"
 import { QuantitySelector } from "./quantity-selector"
 import type { Product } from "@/lib/types"
+import { useCart } from "@/contexts/cart-context"
+import { useLikes } from "@/contexts/likes-context"
 
 interface ProductInfoProps {
   product: Product
@@ -23,7 +24,10 @@ function formatPrice(value: number) {
 }
 
 export function ProductInfo({ product }: ProductInfoProps) {
-  const [isLiked, setIsLiked] = useState(false)
+  const { addItem } = useCart()
+  const { isLiked, toggleItem } = useLikes()
+  const liked = isLiked(product.id)
+  const firstAvailableColor = product.colors.find((color) => color.available)?.name ?? "Padrao"
 
   return (
     <div className="flex flex-col gap-6">
@@ -107,7 +111,20 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Action Buttons */}
       <div className="flex flex-col gap-3 pt-2">
-        <Button size="lg" className="gap-2 text-base">
+        <Button
+          size="lg"
+          className="gap-2 text-base"
+          onClick={() =>
+            addItem({
+              productId: product.id,
+              name: product.name,
+              price: product.price,
+              image: product.images[0] ?? "/placeholder.svg",
+              color: firstAvailableColor,
+              quantity: 1,
+            })
+          }
+        >
           <ShoppingCart className="h-5 w-5" />
           Adicionar ao carrinho
         </Button>
@@ -119,16 +136,24 @@ export function ProductInfo({ product }: ProductInfoProps) {
           <Button
             variant="outline"
             size="lg"
-            onClick={() => setIsLiked(!isLiked)}
+            onClick={() =>
+              toggleItem({
+                productId: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.images[0] ?? "/placeholder.svg",
+                color: firstAvailableColor,
+              })
+            }
             className="px-4"
             aria-label={
-              isLiked ? "Remover dos favoritos" : "Adicionar aos favoritos"
+              liked ? "Remover dos favoritos" : "Adicionar aos favoritos"
             }
           >
             <Heart
               className={cn(
                 "h-5 w-5 transition-colors",
-                isLiked
+                liked
                   ? "fill-destructive text-destructive"
                   : "text-muted-foreground"
               )}

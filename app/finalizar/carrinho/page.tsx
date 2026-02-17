@@ -55,7 +55,7 @@ export default function CarrinhoPage() {
 
   return (
     <DefaultLayout>
-      {/* <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/" aria-label="Voltar">
@@ -68,7 +68,7 @@ export default function CarrinhoPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Items /}
+          {/* Items */}
           <div className="lg:col-span-2">
             <div className="flex flex-col gap-4">
               {items.map((item) => (
@@ -164,14 +164,14 @@ export default function CarrinhoPage() {
             </div>
           </div>
 
-          {/* Summary sidebar /}
+          {/* Summary sidebar */}
           <div className="lg:sticky lg:top-24">
             <Card>
               <CardHeader>
                 <CardTitle>Resumo do pedido</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
-                {/* Coupon /}
+                {/* Coupon */}
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -248,7 +248,7 @@ export default function CarrinhoPage() {
                 </p>
 
                 <Button asChild size="lg" className="mt-2">
-                  <Link href="/checkout">Finalizar compra</Link>
+                  <Link href="/finalizar/checkout">Finalizar compra</Link>
                 </Button>
 
                 <Button variant="ghost" asChild>
@@ -261,7 +261,7 @@ export default function CarrinhoPage() {
             </Card>
           </div>
         </div>
-      </main> */}
+      </main>
     </DefaultLayout>
   );
 }

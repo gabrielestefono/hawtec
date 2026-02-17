@@ -6,6 +6,8 @@ import Link from "next/link"
 import { Heart, ShoppingCart, Star, Eye, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useLikes } from "@/contexts/likes-context"
+import { useCart } from "@/contexts/cart-context"
 
 export type BadgeType = "new" | "discount" | "bestseller" | "limited" | null
 
@@ -191,8 +193,10 @@ function StarRating({ rating, reviewCount }: { rating: number; reviewCount: numb
 }
 
 export function ProductCard({ product }: { product: Product }) {
-  const [isLiked, setIsLiked] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const { addItem } = useCart()
+  const { isLiked, toggleItem } = useLikes()
+  const liked = isLiked(String(product.id))
 
   const formatPrice = (value: number) => {
     return value.toLocaleString("pt-BR", {
@@ -209,14 +213,22 @@ export function ProductCard({ product }: { product: Product }) {
       {/* Like Button */}
       <button
         type="button"
-        onClick={() => setIsLiked(!isLiked)}
+        onClick={() =>
+          toggleItem({
+            productId: String(product.id),
+            name: product.name,
+            price: product.price,
+            image: product.image || "/placeholder.svg",
+            color: "Padrao",
+          })
+        }
         className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm transition-all hover:bg-background hover:scale-110"
-        aria-label={isLiked ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+        aria-label={liked ? "Remover dos favoritos" : "Adicionar aos favoritos"}
       >
         <Heart
           className={cn(
             "h-4 w-4 transition-colors",
-            isLiked ? "fill-destructive text-destructive" : "text-muted-foreground"
+            liked ? "fill-destructive text-destructive" : "text-muted-foreground"
           )}
         />
       </button>
@@ -289,7 +301,20 @@ export function ProductCard({ product }: { product: Product }) {
         </p>
 
         {/* Add to Cart Button */}
-        <Button className="mt-4 w-full gap-2" size="sm">
+        <Button
+          className="mt-4 w-full gap-2"
+          size="sm"
+          onClick={() =>
+            addItem({
+              productId: String(product.id),
+              name: product.name,
+              price: product.price,
+              image: product.image || "/placeholder.svg",
+              color: "Padrao",
+              quantity: 1,
+            })
+          }
+        >
           <ShoppingCart className="h-4 w-4" />
           Adicionar ao carrinho
         </Button>

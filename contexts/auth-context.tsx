@@ -18,7 +18,6 @@ import { getUser } from "@/cache/auth/getUser";
 interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (
     name: string,
@@ -40,8 +39,6 @@ export function AuthProvider({
   initialUser,
 }: Readonly<{ children: ReactNode; initialUser: User | null }>) {
   const [user, setUser] = useState<User | null>(initialUser);
-
-  const [isLoading, setIsLoading] = useState(true);
 
   const login = useCallback(
     async (email: string, password: string): Promise<boolean> => {
@@ -119,7 +116,6 @@ export function AuthProvider({
       logout,
       setUser,
       register,
-      isLoading,
       updateProfile,
       forgotPassword,
       isAuthenticated: !!user,
@@ -130,7 +126,6 @@ export function AuthProvider({
       logout,
       setUser,
       register,
-      isLoading,
       updateProfile,
       forgotPassword,
     ],

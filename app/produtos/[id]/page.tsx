@@ -25,8 +25,8 @@ export default async function ProductPage() {
 
   return (
     <DefaultLayout>
-      {/* <main className="min-h-screen bg-background">
-        {/* Breadcrumb /}
+      <main className="min-h-screen bg-background">
+        {/* Breadcrumb */}
         <div className="border-b border-border bg-secondary/20">
           <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
             <Breadcrumb>
@@ -51,27 +51,27 @@ export default async function ProductPage() {
           </div>
         </div>
 
-        {/* Product Main Section /}
+        {/* Product Main Section */}
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
-            {/* Left: Image Gallery /}
+            {/* Left: Image Gallery */}
             <ProductImageGallery
               images={product.images}
               productName={product.name}
             />
 
-            {/* Right: Product Info /}
+            {/* Right: Product Info */}
             <ProductInfo product={product} />
           </div>
         </section>
 
-        {/* Tabs Section /}
+        {/* Tabs Section */}
         <section className="border-t border-border">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
             <ProductTabs product={product} />
           </div>
         </section>
-      </main> */}
+      </main>
     </DefaultLayout>
   );
 }

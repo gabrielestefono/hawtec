@@ -28,7 +28,7 @@ import { useAuth } from "@/contexts/auth-context";
 
 const navigation = [
   { name: "Início", href: "/" },
-  { name: "Produtos", href: "/produtos" },
+  { name: "Produtos", href: "/produto" },
   // { name: "Categorias", href: "/categorias" },
   // { name: "Ofertas", href: "/ofertas" },
   // { name: "Contato", href: "/contato" },
@@ -138,7 +138,7 @@ export function Header() {
             </Button> */}
 
             {/* Wishlist */}
-            {/* <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative">
               <Heart className="h-5 w-5" />
               {wishlistCount > 0 && (
                 <Badge
@@ -149,7 +149,7 @@ export function Header() {
                 </Badge>
               )}
               <span className="sr-only">Lista de Desejos</span>
-            </Button> */}
+            </Button>
 
             {/* Cart */}
             {/* <Button variant="ghost" size="icon" className="relative">

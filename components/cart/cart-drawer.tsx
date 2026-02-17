@@ -128,7 +128,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               </p>
               <div className="flex flex-col gap-2">
                 <Button asChild size="lg" onClick={() => onOpenChange(false)}>
-                  <Link href="/checkout">Finalizar compra</Link>
+                  <Link href="/finalizar/checkout">Finalizar compra</Link>
                 </Button>
                 <Button
                   variant="outline"
@@ -136,7 +136,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                   size="lg"
                   onClick={() => onOpenChange(false)}
                 >
-                  <Link href="/carrinho">Ver carrinho completo</Link>
+                  <Link href="/finalizar/carrinho">Ver carrinho completo</Link>
                 </Button>
               </div>
             </div>

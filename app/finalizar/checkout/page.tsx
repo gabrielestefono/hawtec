@@ -110,14 +110,14 @@ export default function CheckoutEntregaPage() {
 
   return (
     <DefaultLayout>
-      {/* <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
         <div className="mb-8">
           <CheckoutStepper currentStep={1} />
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
           <div className="flex flex-col gap-6">
-            {/* Address form /}
+            {/* Address form */}
             <Card>
               <CardHeader>
                 <CardTitle>Endereco de entrega</CardTitle>
@@ -209,7 +209,7 @@ export default function CheckoutEntregaPage() {
               </CardContent>
             </Card>
 
-            {/* Shipping options /}
+            {/* Shipping options */}
             <Card>
               <CardHeader>
                 <CardTitle>Frete</CardTitle>
@@ -271,12 +271,12 @@ export default function CheckoutEntregaPage() {
             </Button>
           </div>
 
-          {/* Summary /}
+          {/* Summary */}
           <div className="lg:sticky lg:top-20">
             <OrderSummary shipping={shippingPrice} />
           </div>
         </div>
-      </main> */}
+      </main>
     </DefaultLayout>
   );
 }

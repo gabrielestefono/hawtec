@@ -37,7 +37,7 @@ export default function MeusDadosPage() {
 
   return (
     <DefaultLayout>
-      {/* <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Dados pessoais</CardTitle>
@@ -152,7 +152,7 @@ export default function MeusDadosPage() {
             </form>
           </CardContent>
         </Card>
-      </div> */}
+      </div>
     </DefaultLayout>
   );
 }

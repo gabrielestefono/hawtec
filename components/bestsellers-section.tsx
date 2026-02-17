@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Heart, ShoppingCart, Star, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useLikes } from "@/contexts/likes-context"
+import { useCart } from "@/contexts/cart-context"
 
 interface Product {
   id: string
@@ -149,7 +150,9 @@ function getBadgeStyles(variant: string) {
 }
 
 function ProductCard({ product }: { product: Product }) {
-  const [liked, setLiked] = useState(false)
+  const { addItem } = useCart()
+  const { isLiked, toggleItem } = useLikes()
+  const liked = isLiked(product.id)
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/50 hover:shadow-lg">
@@ -174,7 +177,15 @@ function ProductCard({ product }: { product: Product }) {
         {/* Like button */}
         <button
           type="button"
-          onClick={() => setLiked(!liked)}
+          onClick={() =>
+            toggleItem({
+              productId: product.id,
+              name: product.name,
+              price: product.price,
+              image: product.image || "/placeholder.svg",
+              color: "Padrao",
+            })
+          }
           className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm transition-all hover:bg-background hover:scale-110"
         >
           <Heart
@@ -243,7 +254,20 @@ function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Add to cart */}
-        <Button className="mt-auto w-full gap-2" size="sm">
+        <Button
+          className="mt-auto w-full gap-2"
+          size="sm"
+          onClick={() =>
+            addItem({
+              productId: product.id,
+              name: product.name,
+              price: product.price,
+              image: product.image || "/placeholder.svg",
+              color: "Padrao",
+              quantity: 1,
+            })
+          }
+        >
           <ShoppingCart className="h-4 w-4" />
           Adicionar
         </Button>
