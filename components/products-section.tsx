@@ -7,12 +7,13 @@ import { Heart, ShoppingCart, Star, Eye, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-type BadgeType = "new" | "discount" | "bestseller" | "limited" | null
+export type BadgeType = "new" | "discount" | "bestseller" | "limited" | null
 
-interface Product {
+export interface Product {
   id: number
   name: string
   description: string
+  category: string
   price: number
   originalPrice?: number
   rating: number
@@ -23,10 +24,11 @@ interface Product {
   inStock: boolean
 }
 
-const products: Product[] = [
+export const products: Product[] = [
   {
     id: 1,
     name: 'MacBook Pro 14" M3',
+    category: "Notebooks",
     description: "Chip M3 Pro, 18GB RAM, 512GB SSD",
     price: 12499,
     originalPrice: 14999,
@@ -40,6 +42,7 @@ const products: Product[] = [
   {
     id: 2,
     name: "iPhone 15 Pro Max",
+    category: "Smartphones",
     description: "256GB, Titânio Natural",
     price: 9499,
     rating: 4.8,
@@ -51,6 +54,7 @@ const products: Product[] = [
   {
     id: 3,
     name: "Monitor LG UltraGear 27''",
+    category: "Monitores",
     description: "4K 144Hz, 1ms, HDR600",
     price: 2899,
     originalPrice: 3499,
@@ -64,6 +68,7 @@ const products: Product[] = [
   {
     id: 4,
     name: "Teclado Keychron Q1 Pro",
+    category: "Perifericos",
     description: "Mecânico, Hot-swap, RGB",
     price: 1299,
     rating: 4.9,
@@ -75,6 +80,7 @@ const products: Product[] = [
   {
     id: 5,
     name: "RTX 4080 Super Gaming",
+    category: "Componentes",
     description: "16GB GDDR6X, Ray Tracing",
     price: 8999,
     originalPrice: 10499,
@@ -88,6 +94,7 @@ const products: Product[] = [
   {
     id: 6,
     name: "Sony WH-1000XM5",
+    category: "Audio",
     description: "Noise Cancelling, 30h bateria",
     price: 2199,
     rating: 4.9,
@@ -99,6 +106,7 @@ const products: Product[] = [
   {
     id: 7,
     name: "Samsung Galaxy S24 Ultra",
+    category: "Smartphones",
     description: "512GB, AI Features, S Pen",
     price: 8499,
     originalPrice: 9999,
@@ -112,6 +120,7 @@ const products: Product[] = [
   {
     id: 8,
     name: "SSD Samsung 990 Pro 2TB",
+    category: "Componentes",
     description: "NVMe M.2, 7450MB/s",
     price: 1199,
     rating: 4.8,
@@ -181,7 +190,7 @@ function StarRating({ rating, reviewCount }: { rating: number; reviewCount: numb
   )
 }
 
-function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product }: { product: Product }) {
   const [isLiked, setIsLiked] = useState(false)
   const [imageError, setImageError] = useState(false)
 

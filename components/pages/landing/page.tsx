@@ -46,11 +46,11 @@ export default function Home() {
   return (
     <DefaultLayout>
       <HeroSection bannerSlides={bannerSlides} />
-      {/* <CategoriesSection /> */}
-      {/* <ProductsSection /> */}
-      {/* <OffersSection /> */}
-      {/* <BestsellersSection /> */}
-      {/* <ContactSection /> */}
+      <CategoriesSection />
+      <ProductsSection />
+      <OffersSection />
+      <BestsellersSection />
+      <ContactSection />
     </DefaultLayout>
   );
 }

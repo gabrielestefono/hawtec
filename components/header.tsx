@@ -28,7 +28,7 @@ import { useAuth } from "@/contexts/auth-context";
 
 const navigation = [
   { name: "Início", href: "/" },
-  // { name: "Produtos", href: "/produtos" },
+  { name: "Produtos", href: "/produtos" },
   // { name: "Categorias", href: "/categorias" },
   // { name: "Ofertas", href: "/ofertas" },
   // { name: "Contato", href: "/contato" },
