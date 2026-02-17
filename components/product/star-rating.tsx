@@ -1,54 +1,45 @@
-import { Star, StarHalf } from "lucide-react"
-import { cn } from "@/lib/utils"
+"use client";
 
-interface StarRatingProps {
-  rating: number
-  reviewCount?: number
-  size?: "sm" | "md"
-  showCount?: boolean
+import { cn } from "@/lib/utils";
+import { Star } from "lucide-react";
+
+export interface Review {
+  id: number;
+  product_id: number;
+  user_id: number;
+  rating: number;
+  comment: string;
+  created_at: string;
+  updated_at: string;
 }
 
-export function StarRating({
+interface StarRatingProps {
+  rating: number;
+  reviewCount: number;
+}
+
+export default function StarRating({
   rating,
   reviewCount,
-  size = "sm",
-  showCount = true,
-}: StarRatingProps) {
-  const fullStars = Math.floor(rating)
-  const hasHalfStar = rating - fullStars >= 0.5
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
-
-  const iconSize = size === "sm" ? "h-3.5 w-3.5" : "h-4.5 w-4.5"
-
+}: Readonly<StarRatingProps>) {
   return (
     <div className="flex items-center gap-1.5">
-      <div className="flex items-center" aria-label={`${rating} de 5 estrelas`}>
-        {Array.from({ length: fullStars }).map((_, i) => (
+      <div className="flex items-center">
+        {Array.from({ length: 5 }).map((_, i) => (
           <Star
-            key={`full-${i}`}
-            className={cn(iconSize, "fill-amber-400 text-amber-400")}
-          />
-        ))}
-        {hasHalfStar && (
-          <StarHalf
-            className={cn(iconSize, "fill-amber-400 text-amber-400")}
-          />
-        )}
-        {Array.from({ length: emptyStars }).map((_, i) => (
-          <Star
-            key={`empty-${i}`}
-            className={cn(iconSize, "text-muted-foreground/30")}
+            key={`star-${i}-${rating}`}
+            className={cn(
+              "h-3.5 w-3.5",
+              i < Math.floor(rating)
+                ? "fill-amber-400 text-amber-400"
+                : "fill-muted text-muted",
+            )}
           />
         ))}
       </div>
-      <span className={cn("font-semibold text-foreground", size === "sm" ? "text-sm" : "text-base")}>
-        {rating}
+      <span className="text-xs text-muted-foreground">
+        {rating} ({reviewCount})
       </span>
-      {showCount && reviewCount !== undefined && (
-        <span className="text-sm text-muted-foreground">
-          ({reviewCount} {reviewCount === 1 ? "avaliacao" : "avaliacoes"})
-        </span>
-      )}
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import Link from "next/link"
+import Link from "next/link";
 import {
   Wrench,
   Laptop,
@@ -12,76 +12,26 @@ import {
   HardDrive,
   Cable,
   ArrowRight,
-} from "lucide-react"
+} from "lucide-react";
 
-const productCategories = [
-  {
-    id: 1,
-    name: "Notebooks",
-    description: "Trabalho e gaming",
-    icon: Laptop,
-    href: "/notebooks",
-    itemCount: 48,
-  },
-  {
-    id: 2,
-    name: "Smartphones",
-    description: "Todas as marcas",
-    icon: Smartphone,
-    href: "/smartphones",
-    itemCount: 124,
-  },
-  {
-    id: 3,
-    name: "Monitores",
-    description: "Full HD a 4K",
-    icon: Monitor,
-    href: "/monitores",
-    itemCount: 36,
-  },
-  {
-    id: 4,
-    name: "Teclados",
-    description: "Mecânicos e membrane",
-    icon: Keyboard,
-    href: "/teclados",
-    itemCount: 67,
-  },
-  {
-    id: 5,
-    name: "Headsets",
-    description: "Áudio profissional",
-    icon: Headphones,
-    href: "/headsets",
-    itemCount: 43,
-  },
-  {
-    id: 6,
-    name: "Processadores",
-    description: "Intel e AMD",
-    icon: Cpu,
-    href: "/processadores",
-    itemCount: 29,
-  },
-  {
-    id: 7,
-    name: "Armazenamento",
-    description: "SSD e HDD",
-    icon: HardDrive,
-    href: "/armazenamento",
-    itemCount: 52,
-  },
-  {
-    id: 8,
-    name: "Acessórios",
-    description: "Cabos e mais",
-    icon: Cable,
-    href: "/acessorios",
-    itemCount: 189,
-  },
-]
+export interface Category {
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+  href: string;
+  created_at: string;
+  updated_at: string;
+  products_count: number;
+}
 
-export function CategoriesSection() {
+interface CategoriesSectionProps {
+  categories: Category[];
+}
+
+export function CategoriesSection({
+  categories,
+}: Readonly<CategoriesSectionProps>) {
   return (
     <section className="border-t border-border bg-background py-12 lg:py-16">
       <div className="mx-auto max-w-7xl px-4">
@@ -123,7 +73,8 @@ export function CategoriesSection() {
                 Assistência Técnica
               </h3>
               <p className="mt-2 text-muted-foreground">
-                Manutenção, reparo e suporte especializado para todos os seus dispositivos
+                Manutenção, reparo e suporte especializado para todos os seus
+                dispositivos
               </p>
             </div>
 
@@ -156,14 +107,14 @@ export function CategoriesSection() {
 
           {/* Product Categories Grid - 2 columns, 4 rows = 8 items */}
           <div className="grid grid-cols-2 gap-3 lg:col-span-2 lg:gap-4">
-            {productCategories.map((category) => (
+            {categories.map((category) => (
               <Link
                 key={category.id}
                 href={category.href}
                 className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:bg-card/80 hover:shadow-md"
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                  <category.icon className="h-6 w-6" />
+                  {/* <category.icon className="h-6 w-6" /> */}
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="truncate font-semibold text-foreground">
@@ -174,7 +125,7 @@ export function CategoriesSection() {
                   </p>
                 </div>
                 <span className="hidden shrink-0 rounded-full bg-secondary px-2 py-1 text-xs text-muted-foreground sm:block">
-                  {category.itemCount}
+                  {category.products_count}
                 </span>
               </Link>
             ))}
@@ -191,5 +142,5 @@ export function CategoriesSection() {
         </Link>
       </div>
     </section>
-  )
+  );
 }
