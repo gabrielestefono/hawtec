@@ -5,12 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2 } from "lucide-react";
 import type { Product } from "@/lib/types";
 import StarRating from "./star-rating";
+import { ProductPageInterface } from "../pages/produtos/item/page";
 
 interface ProductTabsProps {
-  product: Product;
+  product: ProductPageInterface;
 }
 
-export function ProductTabs({ product }: ProductTabsProps) {
+export function ProductTabs({ product }: Readonly<ProductTabsProps>) {
   return (
     <Tabs defaultValue="descricao" className="w-full">
       <TabsList className="w-full justify-start rounded-none border-b border-border bg-transparent p-0">

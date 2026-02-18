@@ -14,13 +14,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ColorSelector } from "./color-selector";
 import { QuantitySelector } from "./quantity-selector";
-import type { Product } from "@/lib/types";
 import { useCart } from "@/contexts/cart-context";
 import { useLikes } from "@/contexts/likes-context";
 import StarRating from "./star-rating";
+import { ProductPageInterface } from "../pages/produtos/item/page";
 
 interface ProductInfoProps {
-  product: Product;
+  product: ProductPageInterface;
 }
 
 function formatPrice(value: number) {
@@ -99,9 +99,9 @@ export function ProductInfo({ product }: Readonly<ProductInfoProps>) {
           </span>{" "}
           sem juros
         </span>
-        <span className="mt-1 text-sm font-medium text-accent">
+        {/* <span className="mt-1 text-sm font-medium text-accent">
           {formatPrice(product.price * 0.9)} no PIX (10% off)
-        </span>
+        </span> */}
       </div>
 
       <Separator />
@@ -122,7 +122,7 @@ export function ProductInfo({ product }: Readonly<ProductInfoProps>) {
               productId: product.id,
               name: product.name,
               price: product.price,
-              image: product.images[0] ?? "/placeholder.svg",
+              image: product.images[0].url ?? "/placeholder.svg",
               color: firstAvailableColor,
               quantity: 1,
             })
@@ -148,7 +148,7 @@ export function ProductInfo({ product }: Readonly<ProductInfoProps>) {
                 productId: product.id,
                 name: product.name,
                 price: product.price,
-                image: product.images[0] ?? "/placeholder.svg",
+                image: product.images[0].url ?? "/placeholder.svg",
                 color: firstAvailableColor,
               })
             }

@@ -100,7 +100,7 @@ export function CategoriesSection({
               {categories.map((category) => (
                 <Link
                   key={category.id}
-                  href={`/produtos/categoria?categorias=${category.slug}`}
+                  href={`/produtos?categorias=${category.slug}`}
                   className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:bg-card/80 hover:shadow-md"
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">

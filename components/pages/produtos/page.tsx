@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Search, SlidersHorizontal } from "lucide-react";
+import { type ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,51 +19,197 @@ import {
 import ProductCard, { Product } from "@/components/product/product-card";
 
 type SortKey =
-  | "featured"
-  | "price-asc"
-  | "price-desc"
-  | "rating"
-  | "reviews"
-  | "discount"
+  | "most_relevant"
+  | "lowest_price"
+  | "highest_price"
+  | "best_rating"
+  | "most_reviewed"
+  | "biggest_discount"
   | "newest";
 
-const priceRanges: Record<string, { min: number; max: number | null }> = {
-  all: { min: 0, max: null },
+type PriceRangeKey = "0-2000" | "2000-5000" | "5000-10000" | "10000+";
+
+interface ProductPageProps {
+  products: Product[];
+}
+
+interface FiltersFormValues {
+  search: string;
+  categories: string[];
+  priceRanges: PriceRangeKey[];
+  ratings: string[];
+  onlyOffers: boolean;
+  inStock: boolean;
+  sortBy: SortKey;
+}
+
+const priceRanges: Record<PriceRangeKey, { min: number; max: number | null }> = {
   "0-2000": { min: 0, max: 2000 },
   "2000-5000": { min: 2000, max: 5000 },
   "5000-10000": { min: 5000, max: 10000 },
   "10000+": { min: 10000, max: null },
 };
 
-interface ProductPageProps {
-  products: Product[];
-}
+const sortOptions: Array<{ value: SortKey; label: string }> = [
+  { value: "most_relevant", label: "Mais relevantes" },
+  { value: "lowest_price", label: "Menor preco" },
+  { value: "highest_price", label: "Maior preco" },
+  { value: "best_rating", label: "Melhor avaliacao" },
+  { value: "most_reviewed", label: "Mais avaliados" },
+  { value: "biggest_discount", label: "Maior desconto" },
+  { value: "newest", label: "Lancamentos" },
+];
+
+const ratingOptions = [
+  { value: "5", label: "5 estrelas" },
+  { value: "4", label: "4 estrelas" },
+  { value: "3", label: "3 estrelas" },
+  { value: "2", label: "2 estrelas" },
+  { value: "1", label: "1 estrela" },
+];
+
+const parseArrayParam = (searchParams: ReadonlyURLSearchParams, key: string): string[] => {
+  const withBrackets = searchParams.getAll(`${key}[]`);
+  if (withBrackets.length > 0) {
+    return withBrackets;
+  }
+
+  return searchParams.getAll(key);
+};
 
 export default function ProductPage({ products }: Readonly<ProductPageProps>) {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("all");
-  const [priceRange, setPriceRange] = useState("all");
-  const [minimumRating, setMinimumRating] = useState("0");
-  const [onlyPromotions, setOnlyPromotions] = useState(false);
-  const [onlyInStock, setOnlyInStock] = useState(false);
-  const [sortBy, setSortBy] = useState<SortKey>("featured");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const categories = useMemo(() => {
-    return [
-      "all",
-      ...Array.from(new Set(products.map((product) => product.category.name))),
-    ];
-  }, []);
+    return Array.from(
+      new Map(
+        products.map((product) => [String(product.category.id), product.category.name]),
+      ).entries(),
+    ).map(([id, name]) => ({ id, name }));
+  }, [products]);
+
+  const defaultValues = useMemo<FiltersFormValues>(() => {
+    const search = searchParams.get("search") ?? "";
+    const categoriesFromQuery = parseArrayParam(searchParams, "categories");
+    const ratingsFromQuery = parseArrayParam(searchParams, "ratings");
+    const onlyOffers = searchParams.get("only_offers") === "1";
+    const inStock = searchParams.get("in_stock") === "1";
+
+    const sortByValue = searchParams.get("sort_by") as SortKey | null;
+    const sortBy =
+      sortByValue && sortOptions.some((option) => option.value === sortByValue)
+        ? sortByValue
+        : "most_relevant";
+
+    const selectedPriceRanges: PriceRangeKey[] = [];
+    const priceMin = searchParams.get("price_min");
+    const priceMax = searchParams.get("price_max");
+
+    if (priceMin || priceMax) {
+      const min = priceMin ? Number.parseFloat(priceMin) : 0;
+      const max = priceMax ? Number.parseFloat(priceMax) : null;
+
+      (Object.keys(priceRanges) as PriceRangeKey[]).forEach((rangeKey) => {
+        const range = priceRanges[rangeKey];
+        const minMatches = min <= range.min;
+        const maxMatches =
+          max === null
+            ? range.max === null
+            : range.max !== null && max >= range.max;
+
+        if (minMatches && maxMatches) {
+          selectedPriceRanges.push(rangeKey);
+        }
+      });
+    }
+
+    return {
+      search,
+      categories: categoriesFromQuery,
+      priceRanges: selectedPriceRanges,
+      ratings: ratingsFromQuery,
+      onlyOffers,
+      inStock,
+      sortBy,
+    };
+  }, [searchParams]);
+
+  const form = useForm<FiltersFormValues>({
+    defaultValues,
+  });
+
+  const { control, register, handleSubmit, reset, setValue, watch } = form;
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
+
+  const onSubmit = handleSubmit((values) => {
+    const params = new URLSearchParams();
+
+    const normalizedSearch = values.search.trim();
+    if (normalizedSearch) {
+      params.set("search", normalizedSearch);
+    }
+
+    values.categories.forEach((categoryId) => {
+      params.append("categories[]", categoryId);
+    });
+
+    values.ratings.forEach((rating) => {
+      params.append("ratings[]", rating);
+    });
+
+    if (values.priceRanges.length > 0) {
+      const selectedRanges = values.priceRanges.map((key) => priceRanges[key]);
+      const priceMin = Math.min(...selectedRanges.map((range) => range.min));
+      const maxValues = selectedRanges
+        .map((range) => range.max)
+        .filter((rangeMax): rangeMax is number => rangeMax !== null);
+
+      params.set("price_min", String(priceMin));
+
+      if (maxValues.length > 0) {
+        params.set("price_max", String(Math.max(...maxValues)));
+      }
+    }
+
+    if (values.onlyOffers) {
+      params.set("only_offers", "1");
+    }
+
+    if (values.inStock) {
+      params.set("in_stock", "1");
+    }
+
+    if (values.sortBy) {
+      params.set("sort_by", values.sortBy);
+    }
+
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
+  });
 
   const clearFilters = () => {
-    setQuery("");
-    setCategory("all");
-    setPriceRange("all");
-    setMinimumRating("0");
-    setOnlyPromotions(false);
-    setOnlyInStock(false);
-    setSortBy("featured");
+    const initialValues: FiltersFormValues = {
+      search: "",
+      categories: [],
+      priceRanges: [],
+      ratings: [],
+      onlyOffers: false,
+      inStock: false,
+      sortBy: "most_relevant",
+    };
+
+    reset(initialValues);
+    router.push(pathname);
   };
+
+  const selectedCategories = watch("categories");
+  const selectedPriceRanges = watch("priceRanges");
+  const selectedRatings = watch("ratings");
 
   return (
     <DefaultLayout>
@@ -81,17 +229,17 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
       <section className="mx-auto max-w-7xl px-4 py-8 lg:py-10">
         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
           <aside className="h-fit rounded-xl border border-border bg-card p-4 shadow-sm sm:p-5">
-            <div className="mb-5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4 text-primary" />
-                <h2 className="font-semibold text-foreground">Filtros</h2>
+            <form onSubmit={onSubmit} className="space-y-5">
+              <div className="mb-1 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="h-4 w-4 text-primary" />
+                  <h2 className="font-semibold text-foreground">Filtros</h2>
+                </div>
+                <Button variant="ghost" size="sm" type="button" onClick={clearFilters}>
+                  Limpar
+                </Button>
               </div>
-              <Button variant="ghost" size="sm" onClick={clearFilters}>
-                Limpar
-              </Button>
-            </div>
 
-            <div className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="search">Buscar</Label>
                 <div className="relative">
@@ -100,116 +248,171 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
                     id="search"
                     placeholder="Nome ou descricao"
                     className="pl-9"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
+                    {...register("search")}
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Categoria</Label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item === "all" ? "Todas as categorias" : item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label>Categorias</Label>
+                <div className="space-y-2 rounded-md border border-border p-3">
+                  {categories.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">Nenhuma categoria disponivel</p>
+                  ) : (
+                    categories.map((category) => (
+                      <div key={category.id} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`category-${category.id}`}
+                          checked={selectedCategories.includes(category.id)}
+                          onCheckedChange={(checked) => {
+                            const nextValues = checked
+                              ? [...selectedCategories, category.id]
+                              : selectedCategories.filter((item) => item !== category.id);
+
+                            setValue("categories", Array.from(new Set(nextValues)));
+                          }}
+                        />
+                        <Label
+                          htmlFor={`category-${category.id}`}
+                          className="text-sm font-normal"
+                        >
+                          {category.name}
+                        </Label>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">
                 <Label>Faixa de preco</Label>
-                <Select value={priceRange} onValueChange={setPriceRange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas</SelectItem>
-                    <SelectItem value="0-2000">Ate R$ 2.000</SelectItem>
-                    <SelectItem value="2000-5000">
-                      R$ 2.000 a R$ 5.000
-                    </SelectItem>
-                    <SelectItem value="5000-10000">
-                      R$ 5.000 a R$ 10.000
-                    </SelectItem>
-                    <SelectItem value="10000+">Acima de R$ 10.000</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="space-y-2 rounded-md border border-border p-3">
+                  {(Object.keys(priceRanges) as PriceRangeKey[]).map((rangeKey) => {
+                    const labels: Record<PriceRangeKey, string> = {
+                      "0-2000": "Ate R$ 2.000",
+                      "2000-5000": "R$ 2.000 a R$ 5.000",
+                      "5000-10000": "R$ 5.000 a R$ 10.000",
+                      "10000+": "Acima de R$ 10.000",
+                    };
+
+                    return (
+                      <div key={rangeKey} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`price-${rangeKey}`}
+                          checked={selectedPriceRanges.includes(rangeKey)}
+                          onCheckedChange={(checked) => {
+                            const nextValues = checked
+                              ? [...selectedPriceRanges, rangeKey]
+                              : selectedPriceRanges.filter((item) => item !== rangeKey);
+
+                            setValue("priceRanges", Array.from(new Set(nextValues)) as PriceRangeKey[]);
+                          }}
+                        />
+                        <Label htmlFor={`price-${rangeKey}`} className="text-sm font-normal">
+                          {labels[rangeKey]}
+                        </Label>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Avaliacao minima</Label>
-                <Select value={minimumRating} onValueChange={setMinimumRating}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">Qualquer avaliacao</SelectItem>
-                    <SelectItem value="4">4.0 ou mais</SelectItem>
-                    <SelectItem value="4.5">4.5 ou mais</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Avaliacao</Label>
+                <div className="space-y-2 rounded-md border border-border p-3">
+                  {ratingOptions.map((rating) => (
+                    <div key={rating.value} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`rating-${rating.value}`}
+                        checked={selectedRatings.includes(rating.value)}
+                        onCheckedChange={(checked) => {
+                          const nextValues = checked
+                            ? [...selectedRatings, rating.value]
+                            : selectedRatings.filter((item) => item !== rating.value);
+
+                          setValue("ratings", Array.from(new Set(nextValues)));
+                        }}
+                      />
+                      <Label htmlFor={`rating-${rating.value}`} className="text-sm font-normal">
+                        {rating.label}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-3 border-t border-border pt-4">
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="promotions"
-                    checked={onlyPromotions}
-                    onCheckedChange={(checked) =>
-                      setOnlyPromotions(checked === true)
-                    }
-                  />
-                  <Label htmlFor="promotions" className="text-sm font-normal">
-                    Apenas em promocao
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="stock"
-                    checked={onlyInStock}
-                    onCheckedChange={(checked) =>
-                      setOnlyInStock(checked === true)
-                    }
-                  />
-                  <Label htmlFor="stock" className="text-sm font-normal">
-                    Apenas em estoque
-                  </Label>
-                </div>
+                <Controller
+                  control={control}
+                  name="onlyOffers"
+                  render={({ field }) => (
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="promotions"
+                        checked={field.value}
+                        onCheckedChange={(checked) => field.onChange(checked === true)}
+                      />
+                      <Label htmlFor="promotions" className="text-sm font-normal">
+                        Apenas em promocao
+                      </Label>
+                    </div>
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="inStock"
+                  render={({ field }) => (
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="stock"
+                        checked={field.value}
+                        onCheckedChange={(checked) => field.onChange(checked === true)}
+                      />
+                      <Label htmlFor="stock" className="text-sm font-normal">
+                        Apenas em estoque
+                      </Label>
+                    </div>
+                  )}
+                />
               </div>
-            </div>
+
+              <Button type="submit" className="w-full">
+                Aplicar filtros
+              </Button>
+            </form>
           </aside>
 
           <div>
             <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-muted-foreground">
-                {products.length}{" "}
-                {products.length === 1 ? "produto" : "produtos"}{" "}
+                {products.length} {products.length === 1 ? "produto" : "produtos"}{" "}
                 {products.length === 1 ? "encontrado" : "encontrados"}
               </p>
               <div className="w-full sm:w-64">
-                <Select
-                  value={sortBy}
-                  onValueChange={(value) => setSortBy(value as SortKey)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Ordenar por" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="featured">Mais relevantes</SelectItem>
-                    <SelectItem value="price-asc">Menor preco</SelectItem>
-                    <SelectItem value="price-desc">Maior preco</SelectItem>
-                    <SelectItem value="rating">Melhor avaliacao</SelectItem>
-                    <SelectItem value="reviews">Mais avaliados</SelectItem>
-                    <SelectItem value="discount">Maior desconto</SelectItem>
-                    <SelectItem value="newest">Lancamentos</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Controller
+                  control={control}
+                  name="sortBy"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value as SortKey);
+                        onSubmit();
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Ordenar por" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sortOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
             </div>
 
@@ -235,3 +438,4 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
     </DefaultLayout>
   );
 }
+
