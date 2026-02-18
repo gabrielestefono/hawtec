@@ -1,26 +1,9 @@
 "use client";
 
+import { Product } from "@/types/components/landing";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import ProductCard, { Product } from "./product/product-card";
-import { Image } from "@/types/components/landing/HeroSection";
-import { Category } from "./categories-section";
-
-export interface Offer {
-  id: number;
-  name: string;
-  description: string;
-  price: string;
-  sale_price: string;
-  has_offer: boolean;
-  discount_percentage: number;
-  badge: string | null;
-  stock_quantity: number;
-  images: Image[];
-  category: Category;
-  reviews_count: number;
-  reviews_avg_rating: number;
-}
+import ProductCard from "./product/product-card";
 
 interface ProductsSectionProps {
   products: Product[];

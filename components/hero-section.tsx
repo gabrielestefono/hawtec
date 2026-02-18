@@ -4,11 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight, Wrench } from "lucide-react";
-import type { BannerSlide } from "@/types/components/landing/HeroSection";
 import { Button } from "./ui/button";
+import { Banner } from "@/types/components/landing";
 
 interface HeroSectionProps {
-  bannerSlides: BannerSlide[];
+  bannerSlides: Banner[];
 }
 
 export function HeroSection({ bannerSlides }: Readonly<HeroSectionProps>) {

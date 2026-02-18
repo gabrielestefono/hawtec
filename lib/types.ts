@@ -1,25 +1,3 @@
-export interface Product {
-  id: string
-  name: string
-  description: string
-  longDescription: string
-  price: number
-  originalPrice?: number
-  discountPercent?: number
-  images: string[]
-  rating: number
-  reviewCount: number
-  badge?: "novo" | "desconto" | "destaque"
-  category: string
-  brand: string
-  sku: string
-  inStock: boolean
-  stockCount: number
-  colors: ProductColor[]
-  specs: ProductSpec[]
-  reviews: ProductReview[]
-}
-
 export interface ProductColor {
   name: string
   value: string

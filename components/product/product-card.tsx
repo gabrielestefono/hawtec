@@ -4,31 +4,13 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/cart-context";
 import { useLikes } from "@/contexts/likes-context";
 import { cn } from "@/lib/utils";
-import { Image as ImageInterface } from "@/types/components/landing/HeroSection";
+import { Product } from "@/types/components/landing";
 import { Eye, Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Category } from "../categories-section";
 import Badge from "./badge";
 import StarRating from "./star-rating";
-
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: string;
-  sale_price: string;
-  has_offer: boolean;
-  discount_percentage: number;
-  badge: string | null;
-  stock_quantity: number;
-  images: ImageInterface[];
-  category: Category;
-  reviews_count: number;
-  reviews_avg_rating: number;
-  slug: string;
-}
 
 interface ProductCardProps {
   product: Product;
@@ -38,7 +20,7 @@ export default function ProductCard({ product }: Readonly<ProductCardProps>) {
   const [imageError, setImageError] = useState(false);
   const { addItem } = useCart();
   const { isLiked, toggleItem } = useLikes();
-  const liked = isLiked(String(product.id));
+  const liked = isLiked(product.id);
 
   const formatPrice = (value: number) => {
     return value.toLocaleString("pt-BR", {
@@ -50,14 +32,14 @@ export default function ProductCard({ product }: Readonly<ProductCardProps>) {
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg">
       {/* Badge */}
-      <Badge type={"discount"} discountPercent={product.discount_percentage} />
+      {/* {product.discount_percentage !== null && <Badge type={product.badge} discountPercent={product.discount_percentage} />} */}
 
       {/* Like Button */}
       <button
         type="button"
         onClick={() =>
           toggleItem({
-            productId: String(product.id),
+            productId: product.id,
             name: product.name,
             price: Number.parseFloat(product.price),
             image: product.images[0]?.url || "/placeholder.svg",
@@ -137,7 +119,7 @@ export default function ProductCard({ product }: Readonly<ProductCardProps>) {
           <span className="text-lg font-bold text-foreground">
             {formatPrice(Number(product.sale_price))}
           </span>
-          {!!product.price && (
+          {product.price !== product.sale_price && (
             <span className="text-sm text-muted-foreground line-through">
               {formatPrice(Number(product.price))}
             </span>

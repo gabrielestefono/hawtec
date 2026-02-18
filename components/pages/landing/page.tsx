@@ -1,22 +1,13 @@
 "use client";
 
-import { HeroSection } from "@/components/hero-section";
-import { CategoriesSection, Category } from "@/components/categories-section";
-import { OffersSection } from "@/components/offers-section";
 import { BestsellersSection } from "@/components/bestsellers-section";
+import { CategoriesSection } from "@/components/categories-section";
 import { ContactSection } from "@/components/contact-section";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import { BannerSlide } from "@/types/components/landing/HeroSection";
-import { Product } from "@/components/product/product-card";
+import { HeroSection } from "@/components/hero-section";
+import { OffersSection } from "@/components/offers-section";
 import ProductsSection from "@/components/products-section";
-
-interface HomeProps {
-  banners: BannerSlide[];
-  categories: Category[];
-  products: Product[];
-  offers: Product[];
-  bestsellers: Product[];
-}
+import DefaultLayout from "@/layouts/DefaultLayout";
+import { Landing } from "@/types/components/landing";
 
 export default function Home({
   banners,
@@ -24,7 +15,7 @@ export default function Home({
   products,
   offers,
   bestsellers,
-}: Readonly<HomeProps>) {
+}: Readonly<Landing>) {
   return (
     <DefaultLayout>
       <HeroSection bannerSlides={banners} />
