@@ -4,17 +4,21 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 
 export const getUser = cache(async (): Promise<User | null> => {
-  const cookiesObj = cookies();
+  const cookieStore = await cookies();
 
-  const token = (await cookiesObj).get("access_token")?.value;
+  const token = cookieStore.get("access_token")?.value;
 
-  if (token) {
-    const response = await api.get<User | null>("/auth/user", {
+  if (!token) return null;
+
+  try {
+    const response = await api.get<User>("/auth/user", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
     return response.data;
+  } catch {
+    return null;
   }
-  return null;
 });

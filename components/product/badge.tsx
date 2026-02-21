@@ -1,15 +1,12 @@
 import { cn } from "@/lib/utils";
-
-export type BadgeType = "new" | "discount" | "bestseller" | "limited" | null;
+import { BadgeType } from "@/types/components/landing";
 
 interface BadgeProps {
   type: BadgeType;
-  discountPercent?: number;
+  discountPercent?: number|null;
 }
 
 export default function Badge({ type, discountPercent }: Readonly<BadgeProps>) {
-  if (!type) return null;
-
   const badgeConfig = {
     new: {
       label: "Novo",

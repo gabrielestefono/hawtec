@@ -1,7 +1,9 @@
+"use server";
+
 import ProductPage from "@/components/pages/produtos/page";
-import { Product } from "@/components/product/product-card";
 import { api } from "@/lib/api";
 import { Paginated, ResponseApi } from "@/types/app/api/response";
+import { Product } from "@/types/components/landing";
 
 type SearchParamValue = string | string[] | undefined;
 type SearchParams = Record<string, SearchParamValue>;
@@ -12,9 +14,7 @@ interface ProdutosServerPageProps {
 
 const asArray = (value: SearchParamValue): string[] => {
   if (Array.isArray(value)) {
-    return value
-      .map((item) => item.trim())
-      .filter((item) => item.length > 0);
+    return value.map((item) => item.trim()).filter((item) => item.length > 0);
   }
 
   if (typeof value === "string") {
@@ -30,7 +30,10 @@ const getParamArray = (params: SearchParams, key: string): string[] => {
   return Array.from(new Set(values));
 };
 
-const getFirstParam = (params: SearchParams, key: string): string | undefined => {
+const getFirstParam = (
+  params: SearchParams,
+  key: string,
+): string | undefined => {
   const [value] = asArray(params[key]);
   return value;
 };
@@ -78,9 +81,11 @@ export default async function ProdutosServerPage({
     params.set("sort_by", sortBy);
   }
 
-  const endpoint = params.size > 0 ? `/products?${params.toString()}` : "/products";
+  const endpoint =
+    params.size > 0 ? `/products?${params.toString()}` : "/products";
 
-  const response = await api.get<ResponseApi<{ products: Paginated<Product> }>>(endpoint);
+  const response =
+    await api.get<ResponseApi<{ products: Paginated<Product> }>>(endpoint);
   const productsPaginated = response.data.data.products;
   const products = productsPaginated.data;
 

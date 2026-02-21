@@ -17,10 +17,10 @@ import { QuantitySelector } from "./quantity-selector";
 import { useCart } from "@/contexts/cart-context";
 import { useLikes } from "@/contexts/likes-context";
 import StarRating from "./star-rating";
-import { ProductPageInterface } from "../pages/produtos/item/page";
+import { ProductComplete } from "@/types/components/products";
 
 interface ProductInfoProps {
-  product: ProductPageInterface;
+  product: ProductComplete;
 }
 
 function formatPrice(value: number) {
@@ -34,8 +34,7 @@ export function ProductInfo({ product }: Readonly<ProductInfoProps>) {
   const { addItem } = useCart();
   const { isLiked, toggleItem } = useLikes();
   const liked = isLiked(product.id);
-  const firstAvailableColor =
-    product.colors.find((color) => color.available)?.name ?? "Padrao";
+  const firstAvailableColor = product.colors.find((color) => color.available)?.name ?? "Padrao";
 
   return (
     <div className="flex flex-col gap-6">

@@ -1,26 +1,12 @@
 "use client";
 
+import { Variant } from "@/types/components/landing";
 import { TrendingUp } from "lucide-react";
 import Link from "next/link";
-import ProductCard, { Product } from "./product/product-card";
-
-function getBadgeStyles(variant: string) {
-  switch (variant) {
-    case "new":
-      return "bg-accent text-accent-foreground";
-    case "discount":
-      return "bg-destructive text-destructive-foreground";
-    case "bestseller":
-      return "bg-primary text-primary-foreground";
-    case "limited":
-      return "bg-foreground text-background";
-    default:
-      return "bg-muted text-muted-foreground";
-  }
-}
+import ProductCard from "./product/product-card";
 
 interface BestsellersSectionProps {
-  bestsellers: Product[];
+  bestsellers: Variant[];
 }
 
 export function BestsellersSection({
@@ -58,7 +44,7 @@ export function BestsellersSection({
 
         <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
           {bestsellers.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} variant={product} />
           ))}
         </div>
       </div>

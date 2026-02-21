@@ -20,7 +20,7 @@ export default function Home({
     <DefaultLayout>
       <HeroSection bannerSlides={banners} />
       <CategoriesSection categories={categories} />
-      <ProductsSection products={products} />
+      <ProductsSection variants={products} />
       <OffersSection offers={offers} />
       <BestsellersSection bestsellers={bestsellers} />
       <ContactSection />

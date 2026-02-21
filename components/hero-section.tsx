@@ -130,7 +130,7 @@ export function HeroSection({ bannerSlides }: Readonly<HeroSectionProps>) {
                 }`}
               >
                 <Link
-                  href={slide.button_url}
+                  href={slide.button_url ?? ''}
                   className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-bold shadow-md transition-transform hover:scale-[1.03] active:scale-[0.98]"
                   style={{
                     backgroundColor: "oklch(0.78 0.15 175)",
@@ -210,7 +210,7 @@ export function HeroSection({ bannerSlides }: Readonly<HeroSectionProps>) {
                 style={{ opacity: i === current && !isTransitioning ? 1 : 0 }}
               >
                 <Image
-                  src={s.images[0].url}
+                  src={s.image.url}
                   alt={s.title}
                   fill
                   className="object-cover"

@@ -1,3 +1,5 @@
+export type BadgeType = "discount";
+
 export interface Review {
   id: number;
   product_id: number;
@@ -27,16 +29,16 @@ export interface Banner {
   id: number;
   title: string;
   subtitle: string;
-  description: string;
+  description: string | null;
   button_label: string;
-  button_url: string;
+  button_url: string | null;
   is_active: boolean;
   sort: number;
   starts_at: string;
   ends_at: string;
   created_at: string;
   updated_at: string;
-  images: Image[];
+  image: Image;
 }
 
 export interface Category {
@@ -50,33 +52,56 @@ export interface Category {
   products_count: number;
 }
 
+export interface Badge {
+  id: number | null;
+  product_id: number;
+  badge_type: BadgeType;
+  valid_from: string | null;
+  valid_until: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+  discountPercentage: number| null;
+}
+
+export interface Offer {
+  id: number;
+  offer_price: number;
+  starts_at: string;
+  ends_at: string;
+  quantity_limit: number;
+  quantity_sold: number;
+  created_at: string;
+  updated_at: string;
+  product_variant_id: number;
+}
+
 export interface Product {
   id: number;
   name: string;
-  slug: string;
   description: string;
-  brand: null;
-  sku: null;
-  long_description: null;
-  colors: null;
-  specs: null;
-  price: string;
-  badge: string;
-  stock_quantity: number;
+  brand: string;
+  long_description: string;
   created_at: string;
   updated_at: string;
   product_category_id: number;
+  image: Image | null;
+}
+
+export interface Variant {
+  id: number;
+  product_id: number;
+  sku: string;
+  variant_label: string;
+  slug: string;
+  stock_quantity: number;
+  created_at: string;
+  updated_at: string;
+  price: number;
+  product: Product;
+  offer: Offer | null;
+  badge: Badge | null;
   reviews_count: number;
-  reviews_avg_rating: number;
-  reviews_rating: number;
-  current_price: string;
-  sale_price: string;
-  has_offer: boolean;
-  discount_percentage: number|null;
-  images: Image[];
-  offers: Offer[];
-  category: Category;
-  reviews: Review[];
+  reviews_avg_rating?: number|null;
 }
 
 export interface Offer extends Product {}
@@ -86,7 +111,7 @@ export interface Bestseller extends Product {}
 export interface Landing {
   banners: Banner[];
   categories: Category[];
-  products: Product[];
-  offers: Offer[];
-  bestsellers: Bestseller[];
+  products: Variant[];
+  offers: Variant[];
+  bestsellers: Variant[];
 }

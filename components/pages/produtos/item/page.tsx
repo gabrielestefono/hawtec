@@ -11,27 +11,15 @@ import {
 } from "@/components/ui/breadcrumb";
 import { ProductImageGallery } from "@/components/product/product-image-gallery";
 import { ProductInfo } from "@/components/product/product-info";
-import { ProductTabs } from "@/components/product/product-tabs";
 import DefaultLayout from "@/layouts/DefaultLayout";
-
-export interface ProductPageInterface {
-  id: number;
-  category: string;
-  name: string;
-  description: string;
-  price: number;
-  discountPrice?: number;
-  images: string[];
-  specifications: Record<string, string>;
-}
+import { ProductComplete } from "@/types/components/products";
 
 interface ProductPageProps {
-  product: ProductPageInterface;
+  product: ProductComplete;
 }
 
-export default async function ProductPage({
-  product,
-}: Readonly<ProductPageProps>) {
+export default function ProductPage({ product }: Readonly<ProductPageProps>) {
+  console.log(product.colors);
   return (
     <DefaultLayout>
       <main className="min-h-screen bg-background">
@@ -48,7 +36,7 @@ export default async function ProductPage({
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link href="/">{product.category}</Link>
+                    <Link href="/">{product.category.name}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -65,7 +53,7 @@ export default async function ProductPage({
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
             {/* Left: Image Gallery */}
             <ProductImageGallery
-              images={product.images}
+              images={product.images.map((img) => img.url)}
               productName={product.name}
             />
 
@@ -77,7 +65,7 @@ export default async function ProductPage({
         {/* Tabs Section */}
         <section className="border-t border-border">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-            <ProductTabs product={product} />
+            {/* <ProductTabs product={product} /> */}
           </div>
         </section>
       </main>

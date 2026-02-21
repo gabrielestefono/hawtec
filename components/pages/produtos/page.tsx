@@ -3,7 +3,12 @@
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { type ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  type ReadonlyURLSearchParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,7 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ProductCard, { Product } from "@/components/product/product-card";
+import ProductCard from "@/components/product/product-card";
+import { Product } from "@/types/components/landing";
 
 type SortKey =
   | "most_relevant"
@@ -35,7 +41,7 @@ interface ProductPageProps {
 
 interface FiltersFormValues {
   search: string;
-  categories: string[];
+  categories: number[];
   priceRanges: PriceRangeKey[];
   ratings: string[];
   onlyOffers: boolean;
@@ -43,12 +49,13 @@ interface FiltersFormValues {
   sortBy: SortKey;
 }
 
-const priceRanges: Record<PriceRangeKey, { min: number; max: number | null }> = {
-  "0-2000": { min: 0, max: 2000 },
-  "2000-5000": { min: 2000, max: 5000 },
-  "5000-10000": { min: 5000, max: 10000 },
-  "10000+": { min: 10000, max: null },
-};
+const priceRanges: Record<PriceRangeKey, { min: number; max: number | null }> =
+  {
+    "0-2000": { min: 0, max: 2000 },
+    "2000-5000": { min: 2000, max: 5000 },
+    "5000-10000": { min: 5000, max: 10000 },
+    "10000+": { min: 10000, max: null },
+  };
 
 const sortOptions: Array<{ value: SortKey; label: string }> = [
   { value: "most_relevant", label: "Mais relevantes" },
@@ -68,7 +75,10 @@ const ratingOptions = [
   { value: "1", label: "1 estrela" },
 ];
 
-const parseArrayParam = (searchParams: ReadonlyURLSearchParams, key: string): string[] => {
+const parseArrayParam = (
+  searchParams: ReadonlyURLSearchParams,
+  key: string,
+): string[] => {
   const withBrackets = searchParams.getAll(`${key}[]`);
   if (withBrackets.length > 0) {
     return withBrackets;
@@ -85,14 +95,14 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
   const categories = useMemo(() => {
     return Array.from(
       new Map(
-        products.map((product) => [String(product.category.id), product.category.name]),
+        products.map((product) => [product.category.id, product.category.name]),
       ).entries(),
     ).map(([id, name]) => ({ id, name }));
   }, [products]);
 
   const defaultValues = useMemo<FiltersFormValues>(() => {
     const search = searchParams.get("search") ?? "";
-    const categoriesFromQuery = parseArrayParam(searchParams, "categories");
+    const categoriesFromQuery = parseArrayParam(searchParams, "categories").map((value) => Number.parseInt(value, 10));
     const ratingsFromQuery = parseArrayParam(searchParams, "ratings");
     const onlyOffers = searchParams.get("only_offers") === "1";
     const inStock = searchParams.get("in_stock") === "1";
@@ -155,7 +165,7 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
     }
 
     values.categories.forEach((categoryId) => {
-      params.append("categories[]", categoryId);
+      params.append("categories[]", String(categoryId));
     });
 
     values.ratings.forEach((rating) => {
@@ -235,7 +245,12 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
                   <SlidersHorizontal className="h-4 w-4 text-primary" />
                   <h2 className="font-semibold text-foreground">Filtros</h2>
                 </div>
-                <Button variant="ghost" size="sm" type="button" onClick={clearFilters}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  onClick={clearFilters}
+                >
                   Limpar
                 </Button>
               </div>
@@ -257,19 +272,29 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
                 <Label>Categorias</Label>
                 <div className="space-y-2 rounded-md border border-border p-3">
                   {categories.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Nenhuma categoria disponivel</p>
+                    <p className="text-sm text-muted-foreground">
+                      Nenhuma categoria disponivel
+                    </p>
                   ) : (
                     categories.map((category) => (
-                      <div key={category.id} className="flex items-center gap-2">
+                      <div
+                        key={category.id}
+                        className="flex items-center gap-2"
+                      >
                         <Checkbox
                           id={`category-${category.id}`}
                           checked={selectedCategories.includes(category.id)}
                           onCheckedChange={(checked) => {
                             const nextValues = checked
                               ? [...selectedCategories, category.id]
-                              : selectedCategories.filter((item) => item !== category.id);
+                              : selectedCategories.filter(
+                                  (item) => item !== category.id,
+                                );
 
-                            setValue("categories", Array.from(new Set(nextValues)));
+                            setValue(
+                              "categories",
+                              Array.from(new Set(nextValues)),
+                            );
                           }}
                         />
                         <Label
@@ -287,33 +312,43 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
               <div className="space-y-2">
                 <Label>Faixa de preco</Label>
                 <div className="space-y-2 rounded-md border border-border p-3">
-                  {(Object.keys(priceRanges) as PriceRangeKey[]).map((rangeKey) => {
-                    const labels: Record<PriceRangeKey, string> = {
-                      "0-2000": "Ate R$ 2.000",
-                      "2000-5000": "R$ 2.000 a R$ 5.000",
-                      "5000-10000": "R$ 5.000 a R$ 10.000",
-                      "10000+": "Acima de R$ 10.000",
-                    };
+                  {(Object.keys(priceRanges) as PriceRangeKey[]).map(
+                    (rangeKey) => {
+                      const labels: Record<PriceRangeKey, string> = {
+                        "0-2000": "Ate R$ 2.000",
+                        "2000-5000": "R$ 2.000 a R$ 5.000",
+                        "5000-10000": "R$ 5.000 a R$ 10.000",
+                        "10000+": "Acima de R$ 10.000",
+                      };
 
-                    return (
-                      <div key={rangeKey} className="flex items-center gap-2">
-                        <Checkbox
-                          id={`price-${rangeKey}`}
-                          checked={selectedPriceRanges.includes(rangeKey)}
-                          onCheckedChange={(checked) => {
-                            const nextValues = checked
-                              ? [...selectedPriceRanges, rangeKey]
-                              : selectedPriceRanges.filter((item) => item !== rangeKey);
+                      return (
+                        <div key={rangeKey} className="flex items-center gap-2">
+                          <Checkbox
+                            id={`price-${rangeKey}`}
+                            checked={selectedPriceRanges.includes(rangeKey)}
+                            onCheckedChange={(checked) => {
+                              const nextValues = checked
+                                ? [...selectedPriceRanges, rangeKey]
+                                : selectedPriceRanges.filter(
+                                    (item) => item !== rangeKey,
+                                  );
 
-                            setValue("priceRanges", Array.from(new Set(nextValues)) as PriceRangeKey[]);
-                          }}
-                        />
-                        <Label htmlFor={`price-${rangeKey}`} className="text-sm font-normal">
-                          {labels[rangeKey]}
-                        </Label>
-                      </div>
-                    );
-                  })}
+                              setValue(
+                                "priceRanges",
+                                Array.from(new Set(nextValues)),
+                              );
+                            }}
+                          />
+                          <Label
+                            htmlFor={`price-${rangeKey}`}
+                            className="text-sm font-normal"
+                          >
+                            {labels[rangeKey]}
+                          </Label>
+                        </div>
+                      );
+                    },
+                  )}
                 </div>
               </div>
 
@@ -328,12 +363,17 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
                         onCheckedChange={(checked) => {
                           const nextValues = checked
                             ? [...selectedRatings, rating.value]
-                            : selectedRatings.filter((item) => item !== rating.value);
+                            : selectedRatings.filter(
+                                (item) => item !== rating.value,
+                              );
 
                           setValue("ratings", Array.from(new Set(nextValues)));
                         }}
                       />
-                      <Label htmlFor={`rating-${rating.value}`} className="text-sm font-normal">
+                      <Label
+                        htmlFor={`rating-${rating.value}`}
+                        className="text-sm font-normal"
+                      >
                         {rating.label}
                       </Label>
                     </div>
@@ -350,9 +390,14 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
                       <Checkbox
                         id="promotions"
                         checked={field.value}
-                        onCheckedChange={(checked) => field.onChange(checked === true)}
+                        onCheckedChange={(checked) =>
+                          field.onChange(checked === true)
+                        }
                       />
-                      <Label htmlFor="promotions" className="text-sm font-normal">
+                      <Label
+                        htmlFor="promotions"
+                        className="text-sm font-normal"
+                      >
                         Apenas em promocao
                       </Label>
                     </div>
@@ -366,7 +411,9 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
                       <Checkbox
                         id="stock"
                         checked={field.value}
-                        onCheckedChange={(checked) => field.onChange(checked === true)}
+                        onCheckedChange={(checked) =>
+                          field.onChange(checked === true)
+                        }
                       />
                       <Label htmlFor="stock" className="text-sm font-normal">
                         Apenas em estoque
@@ -385,7 +432,8 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
           <div>
             <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-muted-foreground">
-                {products.length} {products.length === 1 ? "produto" : "produtos"}{" "}
+                {products.length}{" "}
+                {products.length === 1 ? "produto" : "produtos"}{" "}
                 {products.length === 1 ? "encontrado" : "encontrados"}
               </p>
               <div className="w-full sm:w-64">
@@ -438,4 +486,3 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
     </DefaultLayout>
   );
 }
-

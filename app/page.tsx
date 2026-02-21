@@ -1,3 +1,5 @@
+"use server";
+
 import Home from "@/components/pages/landing/page";
 import { apiInternal } from "@/lib/api-internal";
 import { ResponseApi } from "@/types/app/api/response";

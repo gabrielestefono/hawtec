@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/cart-context";
 import { useLikes } from "@/contexts/likes-context";
 import { cn } from "@/lib/utils";
-import { Product } from "@/types/components/landing";
+import { Variant } from "@/types/components/landing";
 import { Eye, Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,14 +13,14 @@ import Badge from "./badge";
 import StarRating from "./star-rating";
 
 interface ProductCardProps {
-  product: Product;
+  variant: Variant;
 }
 
-export default function ProductCard({ product }: Readonly<ProductCardProps>) {
+export default function ProductCard({ variant }: Readonly<ProductCardProps>) {
   const [imageError, setImageError] = useState(false);
   const { addItem } = useCart();
   const { isLiked, toggleItem } = useLikes();
-  const liked = isLiked(product.id);
+  const liked = isLiked(variant.id);
 
   const formatPrice = (value: number) => {
     return value.toLocaleString("pt-BR", {
@@ -29,20 +29,29 @@ export default function ProductCard({ product }: Readonly<ProductCardProps>) {
     });
   };
 
+  const productName = `${variant.product.name} • ${variant.variant_label}`;
+
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg">
       {/* Badge */}
-      {/* {product.discount_percentage !== null && <Badge type={product.badge} discountPercent={product.discount_percentage} />} */}
+      {variant.badge && (
+        <Badge
+          type={variant.badge.badge_type}
+          discountPercent={variant.badge.discountPercentage}
+        />
+      )}
 
       {/* Like Button */}
       <button
         type="button"
         onClick={() =>
           toggleItem({
-            productId: product.id,
-            name: product.name,
-            price: Number.parseFloat(product.price),
-            image: product.images[0]?.url || "/placeholder.svg",
+            productId: variant.id,
+            name: productName,
+            price: Number(
+              variant.offer ? variant.offer.offer_price : variant.price,
+            ),
+            image: variant.product.image?.url || "/placeholder.svg",
             color: "Padrao",
           })
         }
@@ -63,8 +72,8 @@ export default function ProductCard({ product }: Readonly<ProductCardProps>) {
       <div className="relative aspect-square overflow-hidden bg-secondary/50">
         {!imageError ? (
           <Image
-            src={product.images[0]?.url || "/placeholder.svg"}
-            alt={product.name}
+            src={variant.product.image?.url || "/placeholder.svg"}
+            alt={variant.product.image?.alt || variant.product.name}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             onError={() => setImageError(true)}
@@ -90,7 +99,7 @@ export default function ProductCard({ product }: Readonly<ProductCardProps>) {
             className="translate-y-4 transition-transform group-hover:translate-y-0"
             asChild
           >
-            <Link href={`/produtos/item/${product.slug}`}>
+            <Link href={`/produtos/item/${variant.slug}`}>
               <Eye className="mr-2 h-4 w-4" />
               Ver mais
             </Link>
@@ -102,33 +111,35 @@ export default function ProductCard({ product }: Readonly<ProductCardProps>) {
       <div className="flex flex-1 flex-col p-4">
         {/* Rating */}
         <StarRating
-          rating={product.reviews_avg_rating}
-          reviewCount={product.reviews_count}
+          rating={variant.reviews_avg_rating ?? 0}
+          reviewCount={variant.reviews_count}
         />
 
         {/* Title & Description */}
         <h3 className="mt-2 line-clamp-1 font-semibold text-foreground">
-          {product.name}
+          {variant.product.name} - {variant.variant_label}
         </h3>
         <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">
-          {product.description}
+          {variant.product.description}
         </p>
 
         {/* Price */}
         <div className="mt-3 flex items-baseline gap-2">
           <span className="text-lg font-bold text-foreground">
-            {formatPrice(Number(product.sale_price))}
+            {formatPrice(
+              Number(variant.offer ? variant.offer.offer_price : variant.price),
+            )}
           </span>
-          {product.price !== product.sale_price && (
+          {variant.offer && (
             <span className="text-sm text-muted-foreground line-through">
-              {formatPrice(Number(product.price))}
+              {formatPrice(Number(variant.price))}
             </span>
           )}
         </div>
 
         {/* Installment */}
         <p className="mt-1 text-xs text-muted-foreground">
-          ou 12x de {formatPrice(Number(product.sale_price) / 12)}
+          ou 12x de VALOR A SER CALCULADO QUANDO IMPLEMENTAR O PAGAMENTO!!!
         </p>
 
         {/* Add to Cart Button */}
@@ -137,10 +148,12 @@ export default function ProductCard({ product }: Readonly<ProductCardProps>) {
           size="sm"
           onClick={() =>
             addItem({
-              productId: String(product.id),
-              name: product.name,
-              price: Number(product.sale_price),
-              image: product.images[0]?.url || "/placeholder.svg",
+              productId: String(variant.id),
+              name: productName,
+              price: Number(
+                variant.offer ? variant.offer.offer_price : variant.price,
+              ),
+              image: variant.product.image?.url || "/placeholder.svg",
               color: "Padrao",
               quantity: 1,
             })

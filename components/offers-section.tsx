@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { Clock } from "lucide-react";
 import OfferCard from "./offers/offer-card";
-import { Product } from "./product/product-card";
+import { Variant } from "@/types/components/landing";
 
 interface OffersSectionProps {
-  offers: Product[];
+  offers: Variant[];
 }
 
 export function OffersSection({ offers }: Readonly<OffersSectionProps>) {

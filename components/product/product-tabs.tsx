@@ -3,12 +3,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2 } from "lucide-react";
-import type { Product } from "@/lib/types";
 import StarRating from "./star-rating";
-import { ProductPageInterface } from "../pages/produtos/item/page";
+import { ProductComplete } from "@/types/components/products";
 
 interface ProductTabsProps {
-  product: ProductPageInterface;
+  product: ProductComplete;
 }
 
 export function ProductTabs({ product }: Readonly<ProductTabsProps>) {

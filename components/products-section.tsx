@@ -1,18 +1,18 @@
 "use client";
 
-import { Product } from "@/types/components/landing";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ProductCard from "./product/product-card";
+import { Variant } from "@/types/components/landing";
 
 interface ProductsSectionProps {
-  products: Product[];
+  variants: Variant[];
 }
 
 export default function ProductsSection({
-  products,
+  variants,
 }: Readonly<ProductsSectionProps>) {
-  if (products.length === 0) {
+  if (variants.length === 0) {
     return null;
   }
 
@@ -40,8 +40,8 @@ export default function ProductsSection({
 
         {/* Products Grid */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {variants.map((variant) => (
+            <ProductCard key={variant.id} variant={variant} />
           ))}
         </div>
 
