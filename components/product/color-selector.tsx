@@ -1,18 +1,22 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { cn } from "@/lib/utils"
-import { Check } from "lucide-react"
-import type { ProductColor } from "@/lib/types"
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
+import { SelectableSpecGroup } from "@/types/components/products";
 
 interface ColorSelectorProps {
-  colors: ProductColor[]
+  colors: SelectableSpecGroup[];
 }
 
-export function ColorSelector({ colors }: ColorSelectorProps) {
+export function ColorSelector({ colors: group }: Readonly<ColorSelectorProps>) {
+  const colorsArray = group.flatMap((g) =>
+    g.name.toLowerCase() === "cor" ? g.values : [],
+  );
+  const [arrayColors, setArrayColors] = useState(colorsArray);
   const [selectedColor, setSelectedColor] = useState(
-    colors.find((c) => c.available)?.name ?? ""
-  )
+    colorsArray[0]?.value || "Padrão",
+  );
 
   return (
     <div className="flex flex-col gap-3">
@@ -21,7 +25,7 @@ export function ColorSelector({ colors }: ColorSelectorProps) {
         <span className="text-sm text-muted-foreground">{selectedColor}</span>
       </div>
       <div className="flex items-center gap-3">
-        {colors.map((color) => (
+        {arrayColors.map((color) => (
           <button
             key={color.name}
             type="button"
@@ -32,7 +36,7 @@ export function ColorSelector({ colors }: ColorSelectorProps) {
               selectedColor === color.name
                 ? "border-primary ring-2 ring-primary/20"
                 : "border-border hover:border-muted-foreground/40",
-              !color.available && "cursor-not-allowed opacity-40"
+              !color.available && "cursor-not-allowed opacity-40",
             )}
             aria-label={`${color.name}${!color.available ? " - Indisponivel" : ""}`}
             title={color.name}
@@ -62,5 +66,5 @@ export function ColorSelector({ colors }: ColorSelectorProps) {
         ))}
       </div>
     </div>
-  )
+  );
 }

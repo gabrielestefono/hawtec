@@ -13,13 +13,13 @@ import { ProductImageGallery } from "@/components/product/product-image-gallery"
 import { ProductInfo } from "@/components/product/product-info";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { ProductComplete } from "@/types/components/products";
+import { ProductTabs } from "@/components/product/product-tabs";
 
 interface ProductPageProps {
   product: ProductComplete;
 }
 
 export default function ProductPage({ product }: Readonly<ProductPageProps>) {
-  console.log(product.colors);
   return (
     <DefaultLayout>
       <main className="min-h-screen bg-background">
@@ -36,12 +36,12 @@ export default function ProductPage({ product }: Readonly<ProductPageProps>) {
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link href="/">{product.category.name}</Link>
+                    <Link href="/">{product.product.category.name}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>{product.name}</BreadcrumbPage>
+                  <BreadcrumbPage>{product.product.name} • {product.variant_label}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -53,8 +53,8 @@ export default function ProductPage({ product }: Readonly<ProductPageProps>) {
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
             {/* Left: Image Gallery */}
             <ProductImageGallery
-              images={product.images.map((img) => img.url)}
-              productName={product.name}
+              images={product.product.images.map((img) => img.url)}
+              productName={product.product.name}
             />
 
             {/* Right: Product Info */}
@@ -65,7 +65,7 @@ export default function ProductPage({ product }: Readonly<ProductPageProps>) {
         {/* Tabs Section */}
         <section className="border-t border-border">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-            {/* <ProductTabs product={product} /> */}
+            <ProductTabs product={product} />
           </div>
         </section>
       </main>

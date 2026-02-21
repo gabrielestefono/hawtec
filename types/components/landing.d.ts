@@ -1,4 +1,4 @@
-export type BadgeType = "discount";
+export type BadgeType = "discount" | "new" | "highlight";
 
 export interface Review {
   id: number;

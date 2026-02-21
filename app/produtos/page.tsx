@@ -3,7 +3,7 @@
 import ProductPage from "@/components/pages/produtos/page";
 import { api } from "@/lib/api";
 import { Paginated, ResponseApi } from "@/types/app/api/response";
-import { Product } from "@/types/components/landing";
+import { Variant } from "@/types/components/landing";
 
 type SearchParamValue = string | string[] | undefined;
 type SearchParams = Record<string, SearchParamValue>;
@@ -85,9 +85,9 @@ export default async function ProdutosServerPage({
     params.size > 0 ? `/products?${params.toString()}` : "/products";
 
   const response =
-    await api.get<ResponseApi<{ products: Paginated<Product> }>>(endpoint);
+    await api.get<ResponseApi<{ products: Paginated<Variant> }>>(endpoint);
   const productsPaginated = response.data.data.products;
   const products = productsPaginated.data;
 
-  return <ProductPage products={products} />;
+  return <ProductPage variants={products} />;
 }

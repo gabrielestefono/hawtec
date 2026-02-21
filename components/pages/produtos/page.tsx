@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ProductCard from "@/components/product/product-card";
-import { Product } from "@/types/components/landing";
+import { Product, Variant } from "@/types/components/landing";
 
 type SortKey =
   | "most_relevant"
@@ -36,7 +36,7 @@ type SortKey =
 type PriceRangeKey = "0-2000" | "2000-5000" | "5000-10000" | "10000+";
 
 interface ProductPageProps {
-  products: Product[];
+  variants: Variant[];
 }
 
 interface FiltersFormValues {
@@ -87,7 +87,7 @@ const parseArrayParam = (
   return searchParams.getAll(key);
 };
 
-export default function ProductPage({ products }: Readonly<ProductPageProps>) {
+export default function ProductPage({ variants }: Readonly<ProductPageProps>) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -95,10 +95,10 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
   const categories = useMemo(() => {
     return Array.from(
       new Map(
-        products.map((product) => [product.category.id, product.category.name]),
+        // variants.map((variant) => [variant.product.category, variant.category.name]),
       ).entries(),
     ).map(([id, name]) => ({ id, name }));
-  }, [products]);
+  }, [variants]);
 
   const defaultValues = useMemo<FiltersFormValues>(() => {
     const search = searchParams.get("search") ?? "";
@@ -432,9 +432,9 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
           <div>
             <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-muted-foreground">
-                {products.length}{" "}
-                {products.length === 1 ? "produto" : "produtos"}{" "}
-                {products.length === 1 ? "encontrado" : "encontrados"}
+                {variants.length}{" "}
+                {variants.length === 1 ? "produto" : "produtos"}{" "}
+                {variants.length === 1 ? "encontrado" : "encontrados"}
               </p>
               <div className="w-full sm:w-64">
                 <Controller
@@ -464,7 +464,7 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
               </div>
             </div>
 
-            {products.length === 0 ? (
+            {variants.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border bg-muted/20 p-10 text-center">
                 <p className="text-base font-medium text-foreground">
                   Nenhum produto encontrado com os filtros atuais.
@@ -475,8 +475,8 @@ export default function ProductPage({ products }: Readonly<ProductPageProps>) {
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 lg:gap-6">
-                {products.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                {variants.map((variant) => (
+                  <ProductCard key={variant.id} variant={variant} />
                 ))}
               </div>
             )}

@@ -30,7 +30,7 @@ export function ProductTabs({ product }: Readonly<ProductTabsProps>) {
           value="avaliacoes"
           className="rounded-none border-b-2 border-transparent px-6 py-3 text-sm font-medium text-muted-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
         >
-          Avaliacoes ({product.reviewCount})
+          Avaliacoes ({product.reviews_count})
         </TabsTrigger>
       </TabsList>
 
@@ -41,7 +41,7 @@ export function ProductTabs({ product }: Readonly<ProductTabsProps>) {
             Sobre o produto
           </h3>
           <p className="leading-relaxed text-muted-foreground">
-            {product.longDescription}
+            {product.product.long_description}
           </p>
         </div>
       </TabsContent>
@@ -55,13 +55,13 @@ export function ProductTabs({ product }: Readonly<ProductTabsProps>) {
           <div className="overflow-hidden rounded-xl border border-border">
             {product.specs.map((spec, index) => (
               <div
-                key={spec.label}
+                key={spec.id}
                 className={`flex items-center justify-between px-5 py-3.5 ${
                   index % 2 === 0 ? "bg-secondary/30" : "bg-background"
                 }`}
               >
                 <span className="text-sm font-medium text-muted-foreground">
-                  {spec.label}
+                  {spec.spec_type.name}
                 </span>
                 <span className="text-sm font-medium text-foreground">
                   {spec.value}
@@ -79,14 +79,14 @@ export function ProductTabs({ product }: Readonly<ProductTabsProps>) {
           <div className="mb-8 flex flex-col gap-4 rounded-xl border border-border bg-secondary/30 p-6 sm:flex-row sm:items-center sm:gap-8">
             <div className="flex flex-col items-center gap-1">
               <span className="text-4xl font-bold text-foreground">
-                {product.rating}
+                {product.reviews_avg_rating ?? 0}
               </span>
               <StarRating
-                rating={product.rating}
-                reviewCount={product.reviewCount}
+                rating={product.reviews_avg_rating ?? 0}
+                reviewCount={product.reviews_count}
               />
               <span className="text-sm text-muted-foreground">
-                {product.reviewCount} avaliacoes
+                {product.reviews_count} avaliacoes
               </span>
             </div>
             <div className="flex flex-1 flex-col gap-2">
@@ -129,7 +129,7 @@ export function ProductTabs({ product }: Readonly<ProductTabsProps>) {
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-foreground">
-                        {review.author}
+                        {review.user.name}
                       </span>
                       {review.verified && (
                         <Badge variant="secondary" className="gap-1 text-xs">
@@ -139,19 +139,19 @@ export function ProductTabs({ product }: Readonly<ProductTabsProps>) {
                       )}
                     </div>
                     <StarRating
-                      rating={product.rating}
-                      reviewCount={product.reviewCount}
+                      rating={review.rating}
+                      reviewCount={1}
                     />
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(review.date).toLocaleDateString("pt-BR")}
+                    {new Date(review.created_at).toLocaleDateString("pt-BR")}
                   </span>
                 </div>
                 <h4 className="font-semibold text-foreground">
                   {review.title}
                 </h4>
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  {review.content}
+                  {review.comment}
                 </p>
               </div>
             ))}

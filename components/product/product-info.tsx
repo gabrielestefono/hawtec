@@ -34,25 +34,25 @@ export function ProductInfo({ product }: Readonly<ProductInfoProps>) {
   const { addItem } = useCart();
   const { isLiked, toggleItem } = useLikes();
   const liked = isLiked(product.id);
-  const firstAvailableColor = product.colors.find((color) => color.available)?.name ?? "Padrao";
 
   return (
     <div className="flex flex-col gap-6">
       {/* Badge & Brand */}
       <div className="flex items-center gap-3">
-        {product.badge === "desconto" && product.discountPercent && (
-          <Badge className="bg-destructive text-destructive-foreground">
-            -{product.discountPercent}%
-          </Badge>
-        )}
-        {product.badge === "novo" && (
+        {product.badge?.badge_type === "discount" &&
+          product.badge?.discountPercentage && (
+            <Badge className="bg-destructive text-destructive-foreground">
+              -{product.badge?.discountPercentage}%
+            </Badge>
+          )}
+        {product.badge?.badge_type === "new" && (
           <Badge className="bg-accent text-accent-foreground">Novo</Badge>
         )}
-        {product.badge === "destaque" && (
+        {product.badge?.badge_type === "highlight" && (
           <Badge className="bg-primary text-primary-foreground">Destaque</Badge>
         )}
         <span className="text-sm font-medium text-muted-foreground">
-          {product.brand}
+          {product.product.brand}
         </span>
         <span className="text-xs text-muted-foreground">
           SKU: {product.sku}
@@ -61,71 +61,75 @@ export function ProductInfo({ product }: Readonly<ProductInfoProps>) {
 
       {/* Title */}
       <h1 className="text-2xl font-bold leading-tight text-foreground text-balance lg:text-3xl">
-        {product.name}
+        {product.product.name} • {product.variant_label}
       </h1>
 
       {/* Rating */}
-      <StarRating rating={product.rating} reviewCount={product.reviewCount} />
+      <StarRating
+        rating={product.reviews_avg_rating ?? 0}
+        reviewCount={product.reviews_count}
+      />
 
       {/* Short Description */}
       <p className="leading-relaxed text-muted-foreground">
-        {product.description}
+        {product.product.description}
       </p>
 
       <Separator />
 
       {/* Price Block */}
       <div className="flex flex-col gap-1">
-        {product.originalPrice && (
+        {product.offer && (
           <span className="text-sm text-muted-foreground line-through">
-            De {formatPrice(product.originalPrice)}
+            De {formatPrice(product.price)}
           </span>
         )}
         <div className="flex items-baseline gap-3">
           <span className="text-3xl font-bold text-foreground">
-            {formatPrice(product.price)}
+            {formatPrice(product.offer?.offer_price ?? product.price)}
           </span>
-          {product.originalPrice && (
+          {product.offer && (
             <span className="text-sm font-medium text-accent">
-              Economize {formatPrice(product.originalPrice - product.price)}
+              Economize {formatPrice(product.price - product.offer.offer_price)}
             </span>
           )}
         </div>
         <span className="text-sm text-muted-foreground">
           ou 12x de{" "}
           <span className="font-medium text-foreground">
-            {formatPrice(product.price / 12)}
+            FAZER ESSA PARTE APÓS IMPLEMENTAR O PAGAMENTO!!!
           </span>{" "}
           sem juros
         </span>
-        {/* <span className="mt-1 text-sm font-medium text-accent">
-          {formatPrice(product.price * 0.9)} no PIX (10% off)
-        </span> */}
+        <span className="mt-1 text-sm font-medium text-accent">
+          {formatPrice((product.offer?.offer_price ?? product.price) * 0.9)} no
+          PIX (10% off)
+        </span>
       </div>
 
       <Separator />
 
       {/* Color */}
-      <ColorSelector colors={product.colors} />
+      {/* <ColorSelector colors={product.grouped_specs.selectable} /> */}
 
       {/* Quantity */}
-      <QuantitySelector max={product.stockCount} />
+      <QuantitySelector max={product.stock_quantity} />
 
       {/* Action Buttons */}
       <div className="flex flex-col gap-3 pt-2">
         <Button
           size="lg"
           className="gap-2 text-base"
-          onClick={() =>
-            addItem({
-              productId: product.id,
-              name: product.name,
-              price: product.price,
-              image: product.images[0].url ?? "/placeholder.svg",
-              color: firstAvailableColor,
-              quantity: 1,
-            })
-          }
+          // onClick={() =>
+          //   addItem({
+          //     productId: product.id,
+          //     name: product.name,
+          //     price: product.price,
+          //     image: product.images[0].url ?? "/placeholder.svg",
+          //     color: firstAvailableColor,
+          //     quantity: 1,
+          //   })
+          // }
         >
           <ShoppingCart className="h-5 w-5" />
           Adicionar ao carrinho
@@ -142,15 +146,15 @@ export function ProductInfo({ product }: Readonly<ProductInfoProps>) {
           <Button
             variant="outline"
             size="lg"
-            onClick={() =>
-              toggleItem({
-                productId: product.id,
-                name: product.name,
-                price: product.price,
-                image: product.images[0].url ?? "/placeholder.svg",
-                color: firstAvailableColor,
-              })
-            }
+            // onClick={() =>
+            //   toggleItem({
+            //     productId: product.id,
+            //     name: product.name,
+            //     price: product.price,
+            //     image: product.images[0].url ?? "/placeholder.svg",
+            //     color: firstAvailableColor,
+            //   })
+            // }
             className="px-4"
             aria-label={
               liked ? "Remover dos favoritos" : "Adicionar aos favoritos"
