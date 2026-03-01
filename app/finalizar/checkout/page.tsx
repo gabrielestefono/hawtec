@@ -105,7 +105,7 @@ export default function CheckoutEntregaPage() {
       "hawtec-checkout-shipping",
       JSON.stringify({ id: selectedShipping, price: shippingPrice }),
     );
-    router.push("/checkout/pagamento");
+    router.push("/finalizar/checkout/pagamento");
   };
 
   return (
